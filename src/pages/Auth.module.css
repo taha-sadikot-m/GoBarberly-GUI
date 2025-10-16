@@ -1,0 +1,480 @@
+/* Authentication Pages Styles */
+.authContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 1rem;
+}
+
+.authCard {
+  width: 100%;
+  max-width: 400px;
+  animation: slideUp 0.6s ease-out;
+}
+
+.card {
+  padding: 0 !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: none;
+}
+
+.header {
+  background: white;
+  padding: 2rem 2rem 1rem 2rem;
+  text-align: center;
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.logo h1 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.logo p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.form {
+  padding: 1rem 2rem 2rem 2rem;
+  background: white;
+  border-radius: 0 0 0.75rem 0.75rem;
+}
+
+.form h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+  text-align: center;
+}
+
+.subtitle {
+  margin: 0 0 1.5rem 0;
+  font-size: 0.875rem;
+  color: #64748b;
+  text-align: center;
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 0.5rem;
+  color: #dc2626;
+  font-size: 0.875rem;
+}
+
+.success {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 0.5rem;
+  color: #16a34a;
+  font-size: 0.875rem;
+}
+
+.inputGroup {
+  margin-bottom: 1rem;
+}
+
+.inputGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.passwordInput {
+  position: relative;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+}
+
+.passwordToggle:hover {
+  background: #f1f5f9;
+}
+
+.passwordToggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.forgotLink {
+  font-size: 0.875rem;
+  color: #667eea;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.forgotLink:hover {
+  color: #5a67d8;
+  text-decoration: underline;
+}
+
+.submitButton {
+  width: 100%;
+  background: #667eea !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.2s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+}
+
+.submitButton:hover:not(:disabled) {
+  background: #5a67d8 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.submitButton:disabled {
+  background: #9ca3af !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.spinner {
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.demo {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+
+.demo p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.demo code {
+  font-size: 0.75rem;
+  color: #1e293b;
+  background: #e2e8f0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-family: 'Courier New', monospace;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  color: #667eea;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.backLink:hover {
+  color: #5a67d8;
+}
+
+.otpContainer {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+.otpInput {
+  width: 3rem !important;
+  height: 3rem !important;
+  text-align: center !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  border: 2px solid #e2e8f0 !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.otpInput:focus {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+}
+
+.otpInput.filled {
+  border-color: #16a34a !important;
+  background: #f0fdf4 !important;
+}
+
+.resendContainer {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.resendText {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+}
+
+.resendButton {
+  background: none !important;
+  border: none !important;
+  color: #667eea !important;
+  font-size: 0.875rem !important;
+  text-decoration: underline !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  transition: color 0.2s ease !important;
+}
+
+.resendButton:hover:not(:disabled) {
+  color: #5a67d8 !important;
+}
+
+.resendButton:disabled {
+  color: #9ca3af !important;
+  cursor: not-allowed !important;
+  text-decoration: none !important;
+}
+
+.timer {
+  font-size: 0.875rem;
+  color: #f59e0b;
+  font-weight: 500;
+}
+
+/* Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Password Reset Specific Styles */
+.passwordContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordInput {
+  padding-right: 3rem !important;
+}
+
+.passwordStrength {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.strengthBar {
+  flex: 1;
+  height: 0.25rem;
+  background: #e2e8f0;
+  border-radius: 0.125rem;
+  overflow: hidden;
+}
+
+.strengthFill {
+  height: 100%;
+  width: 0%;
+  transition: all 0.3s ease;
+  border-radius: 0.125rem;
+}
+
+.weak .strengthFill {
+  width: 33%;
+  background: #dc2626;
+}
+
+.medium .strengthFill {
+  width: 66%;
+  background: #f59e0b;
+}
+
+.strong .strengthFill {
+  width: 100%;
+  background: #16a34a;
+}
+
+.strengthLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  min-width: 3.75rem;
+}
+
+.weak .strengthLabel {
+  color: #dc2626;
+}
+
+.medium .strengthLabel {
+  color: #f59e0b;
+}
+
+.strong .strengthLabel {
+  color: #16a34a;
+}
+
+.passwordMatch {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.match {
+  color: #16a34a;
+  font-weight: 500;
+}
+
+.noMatch {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.passwordRequirements {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.passwordRequirements h4 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.passwordRequirements ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.passwordRequirements li {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin: 0.375rem 0;
+  padding-left: 1.25rem;
+  position: relative;
+}
+
+.passwordRequirements li::before {
+  content: '○';
+  position: absolute;
+  left: 0;
+  color: #cbd5e0;
+}
+
+.passwordRequirements li.met {
+  color: #16a34a;
+}
+
+.passwordRequirements li.met::before {
+  content: '✓';
+  color: #16a34a;
+  font-weight: bold;
+}
+
+.authFooter {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.authFooter p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.link {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: #5a67d8;
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .authContainer {
+    padding: 0.5rem;
+  }
+  
+  .authCard {
+    max-width: 100%;
+  }
+  
+  .header,
+  .form {
+    padding: 1.5rem;
+  }
+  
+  .otpInput {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    font-size: 1rem !important;
+  }
+}

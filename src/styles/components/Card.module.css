@@ -1,0 +1,22 @@
+/* Card styles - maintaining exact styling from original */
+.card {
+  background: #fff;
+  border: 1px solid var(--slate-200);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+.card h3 {
+  margin: 0 0 0.5rem 0;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}

@@ -1,0 +1,74 @@
+/* Sidebar styles - maintaining exact styling from original */
+.sidebar {
+  width: 280px;
+  background: #fff;
+  border-right: 1px solid var(--slate-200);
+  position: fixed;
+  inset: 0 auto 0 0;
+  overflow: auto;
+  z-index: 10;
+  transition: transform 0.25s ease;
+}
+
+.sidebarHeader {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, var(--indigo-500), var(--purple-500));
+  color: #fff;
+}
+
+.logo {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.logo .icon {
+  font-size: 1.4rem;
+}
+
+.logo .text {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.nav {
+  padding: 0.75rem;
+}
+
+.navItem {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.65rem 0.9rem;
+  margin: 0.25rem 0;
+  border-radius: 0.5rem;
+  color: var(--slate-500);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.navItem:hover {
+  background: var(--slate-100);
+  color: var(--blue-600);
+}
+
+.navItem.active {
+  background: linear-gradient(135deg, var(--indigo-500), var(--purple-500));
+  color: #fff;
+}
+
+.ni {
+  width: 1.5rem;
+  text-align: center;
+}
+
+/* Responsive design - matching original HTML exactly */
+@media (max-width: 860px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+}

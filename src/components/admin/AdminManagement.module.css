@@ -1,0 +1,331 @@
+/* Admin Management Styles */
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.headerLeft h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.headerLeft p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.addButton {
+  background: #10b981 !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 500 !important;
+  white-space: nowrap;
+}
+
+.addButton:hover {
+  background: #059669 !important;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  max-width: 400px;
+  flex: 1;
+}
+
+.stats {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.statBadge {
+  padding: 0.25rem 0.75rem;
+  background: #f1f5f9;
+  color: #475569;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.adminGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.adminCard {
+  padding: 1.5rem !important;
+  border: 1px solid #e2e8f0 !important;
+  transition: all 0.2s ease;
+}
+
+.adminCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.adminHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.adminAvatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.adminInfo {
+  flex: 1;
+}
+
+.adminInfo h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.adminInfo p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.adminStatus {
+  display: flex;
+  align-items: center;
+}
+
+.statusBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.statusBadge.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.statusBadge.inactive {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.adminDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 0.5rem;
+}
+
+.detailItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.label {
+  font-weight: 500;
+  color: #475569;
+  font-size: 0.875rem;
+}
+
+.detailItem span:last-child {
+  color: #1e293b;
+  font-size: 0.875rem;
+}
+
+.adminActions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.editButton {
+  color: #3b82f6 !important;
+  border: 1px solid #3b82f6 !important;
+  background: white !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.875rem !important;
+}
+
+.editButton:hover {
+  background: #3b82f6 !important;
+  color: white !important;
+}
+
+.activateButton {
+  color: #10b981 !important;
+  border: 1px solid #10b981 !important;
+  background: white !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.875rem !important;
+}
+
+.activateButton:hover {
+  background: #10b981 !important;
+  color: white !important;
+}
+
+.deactivateButton {
+  color: #f59e0b !important;
+  border: 1px solid #f59e0b !important;
+  background: white !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.875rem !important;
+}
+
+.deactivateButton:hover {
+  background: #f59e0b !important;
+  color: white !important;
+}
+
+.deleteButton {
+  color: #ef4444 !important;
+  border: 1px solid #ef4444 !important;
+  background: white !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.875rem !important;
+}
+
+.deleteButton:hover {
+  background: #ef4444 !important;
+  color: white !important;
+}
+
+.confirmDelete {
+  background: #ef4444 !important;
+  color: white !important;
+  animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.emptyState {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.emptyState h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.emptyState p {
+  margin: 0 0 2rem 0;
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.emptyButton {
+  background: #10b981 !important;
+  color: white !important;
+  border: none !important;
+  padding: 0.75rem 1.5rem !important;
+  font-weight: 500 !important;
+}
+
+.emptyButton:hover {
+  background: #059669 !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .adminGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .searchInput {
+    max-width: none;
+  }
+  
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .adminActions {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .adminCard {
+    padding: 1rem !important;
+  }
+  
+  .adminHeader {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.75rem;
+  }
+  
+  .adminActions {
+    flex-direction: column;
+  }
+  
+  .adminActions button {
+    width: 100%;
+  }
+}

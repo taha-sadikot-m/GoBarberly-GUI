@@ -1,0 +1,43 @@
+/* Table styles - maintaining exact styling from original */
+.tableWrapper {
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid var(--slate-200);
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.thead {
+  background: var(--slate-100);
+  font-weight: 600;
+}
+
+.th {
+  padding: 0.9rem;
+  border-bottom: 1px solid var(--slate-100);
+  text-align: left;
+  font-weight: 600;
+}
+
+.td {
+  padding: 0.9rem;
+  border-bottom: 1px solid var(--slate-100);
+  text-align: left;
+}
+
+.tr {
+  transition: background-color 0.2s ease;
+}
+
+.tr:hover {
+  background: var(--slate-50);
+  cursor: pointer;
+}
+
+.tr:last-child .td {
+  border-bottom: none;
+}

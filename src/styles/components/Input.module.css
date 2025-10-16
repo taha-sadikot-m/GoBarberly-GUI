@@ -1,0 +1,27 @@
+/* Input styles - maintaining exact styling from original */
+.input {
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background: #fff;
+  font-size: 0.9rem;
+  padding: 0.45rem 0.6rem;
+  font-family: inherit;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--indigo-500);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input::placeholder {
+  color: var(--slate-400);
+}
+
+.input:disabled {
+  background: var(--slate-50);
+  color: var(--slate-500);
+  cursor: not-allowed;
+}

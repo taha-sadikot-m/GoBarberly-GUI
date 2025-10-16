@@ -1,0 +1,21 @@
+/* App Layout styles - matching original HTML exactly */
+.container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.main {
+  flex: 1;
+  margin-left: 280px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Mobile responsive */
+@media (max-width: 860px) {
+  .main {
+    margin-left: 0;
+  }
+}
