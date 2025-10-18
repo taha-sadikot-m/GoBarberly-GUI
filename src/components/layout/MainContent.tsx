@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import {
   Dashboard,
   Appointments,
@@ -12,19 +12,36 @@ import {
 import styles from '../../styles/components/MainContent.module.css';
 
 const MainContent: React.FC = () => {
+  const location = useLocation();
+  
+  const renderContent = () => {
+    switch (location.pathname) {
+      case '/dashboard':
+      case '/':
+        return <Dashboard />;
+      case '/appointments':
+        return <Appointments />;
+      case '/sales':
+        return <Sales />;
+      case '/staff':
+        return <Staff />;
+      case '/inventory':
+        return <Inventory />;
+      case '/customers':
+        return <Customers />;
+      case '/reports':
+        return <Reports />;
+      case '/history':
+        return <History />;
+      default:
+        return <Dashboard />;
+    }
+  };
+
   return (
     <main className={styles.main}>
       <section className={styles.content}>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/appointments" element={<Appointments />} />
-          <Route path="/sales" element={<Sales />} />
-          <Route path="/staff" element={<Staff />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/customers" element={<Customers />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/history" element={<History />} />
-        </Routes>
+        {renderContent()}
       </section>
     </main>
   );

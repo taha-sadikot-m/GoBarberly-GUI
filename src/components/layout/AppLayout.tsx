@@ -10,6 +10,10 @@ const pageInfo: Record<string, { title: string; subtitle: string }> = {
     title: 'Dashboard',
     subtitle: 'Welcome to your barbershop management system',
   },
+  '/dashboard': {
+    title: 'Dashboard',
+    subtitle: 'Welcome to your barbershop management system',
+  },
   '/appointments': {
     title: 'Appointments',
     subtitle: 'Manage your daily appointments and schedule',

@@ -23,6 +23,7 @@ const Login: React.FC = () => {
 
   // Redirect if already authenticated
   useEffect(() => {
+    console.log('Login page: Auth state changed', { isAuthenticated, user }); // Debug log
     if (isAuthenticated && user) {
       const from = location.state?.from?.pathname || getDashboardPath(user.role);
       navigate(from, { replace: true });

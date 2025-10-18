@@ -4,7 +4,7 @@ import { clsx } from '../../utils';
 import type { NavigationItem } from '../../types';
 
 const navigationItems: NavigationItem[] = [
-  { id: 'dashboard', label: 'Dashboard', icon: '📊', path: '/' },
+  { id: 'dashboard', label: 'Dashboard', icon: '📊', path: '/dashboard' },
   { id: 'appointments', label: 'Appointments', icon: '📅', path: '/appointments' },
   { id: 'sales', label: 'Sales', icon: '💰', path: '/sales' },
   { id: 'staff', label: 'Staff', icon: '👥', path: '/staff' },

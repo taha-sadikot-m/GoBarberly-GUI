@@ -148,9 +148,15 @@ const AdminDashboard: React.FC = () => {
           <div className={styles.headerActions}>
             <span className={styles.welcomeText}>Welcome, {user?.name}</span>
             <Button 
-              onClick={() => {
-                logout();
-                navigate('/login');
+              onClick={async () => {
+                console.log('Admin logout button clicked'); // Debug log
+                try {
+                  logout();
+                  console.log('Logout completed, navigating to login'); // Debug log
+                  navigate('/login', { replace: true });
+                } catch (error) {
+                  console.error('Logout error:', error);
+                }
               }}
               className={styles.logoutButton}
             >

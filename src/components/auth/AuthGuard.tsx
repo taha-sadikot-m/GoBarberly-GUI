@@ -37,6 +37,7 @@ const AuthGuard: React.FC<AuthGuardProps> = ({ children, allowedRoles }) => {
   }
 
   if (!isAuthenticated || !user) {
+    console.log('AuthGuard: User not authenticated, redirecting to login', { isAuthenticated, user }); // Debug log
     // Redirect to login page with return url
     return <Navigate to="/login" state={{ from: location }} replace />;
   }

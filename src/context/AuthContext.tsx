@@ -149,8 +149,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = (): void => {
+    console.log('Logout function called'); // Debug log
     localStorage.removeItem('auth');
     dispatch({ type: 'LOGOUT' });
+    console.log('Logout dispatched, localStorage cleared'); // Debug log
   };
 
   const clearError = (): void => {
