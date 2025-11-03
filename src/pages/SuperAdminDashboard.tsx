@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, Button } from '../components/ui';
-import { UserRole, type SuperAdminStats, type Admin, type Barbershop } from '../types/user';
+import { type SuperAdminStats } from '../types/user';
 import AdminManagement from '../components/admin/AdminManagement';
 import BarbershopManagement from '../components/admin/BarbershopManagement';
+import ArchiveManagement from '../components/admin/ArchiveManagement';
 import { useAuth } from '../context/AuthContext';
+import { superAdminService } from '../services/superAdminApi';
+
 import styles from './SuperAdminDashboard.module.css';
 
 const SuperAdminDashboard: React.FC = () => {
   const navigate = useNavigate();
-  const { logout, user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'overview' | 'admins' | 'barbershops'>('overview');
+  const { logout, state } = useAuth();
+  const [activeTab, setActiveTab] = useState<'overview' | 'admins' | 'barbershops' | 'archive'>('overview');
   const [stats, setStats] = useState<SuperAdminStats>({
     totalAdmins: 0,
     totalBarbershops: 0,
@@ -18,8 +21,9 @@ const SuperAdminDashboard: React.FC = () => {
     totalRevenue: 0,
     monthlyGrowth: 0
   });
-  const [admins, setAdmins] = useState<Admin[]>([]);
-  const [barbershops, setBarbershops] = useState<Barbershop[]>([]);
+
+
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -28,163 +32,33 @@ const SuperAdminDashboard: React.FC = () => {
 
   const loadDashboardData = async () => {
     setIsLoading(true);
+    setError(null);
+    
     try {
-      // Simulate API calls - in real app, these would be actual API calls
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Load dashboard data from backend API
+      const dashboardData = await superAdminService.getDashboardData();
       
-      // Mock data
-      const mockStats: SuperAdminStats = {
-        totalAdmins: 5,
-        totalBarbershops: 25,
-        activeBarbershops: 22,
-        totalRevenue: 125000,
-        monthlyGrowth: 15.2
+      // Convert backend stats to frontend format
+      const frontendStats: SuperAdminStats = {
+        totalAdmins: dashboardData.stats.total_admins,
+        totalBarbershops: dashboardData.stats.total_barbershops,
+        activeBarbershops: dashboardData.stats.active_barbershops,
+        totalRevenue: Number(dashboardData.stats.total_revenue),
+        monthlyGrowth: dashboardData.stats.monthly_growth
       };
 
-      const mockAdmins: Admin[] = [
-        {
-          id: '1',
-          email: 'john.admin@gobarberly.com',
-          name: 'John Smith',
-          role: UserRole.ADMIN,
-          createdAt: new Date('2024-01-15'),
-          updatedAt: new Date('2024-01-15'),
-          isActive: true,
-          createdBy: 'super-admin-1',
-          managedBarbershops: ['bb1', 'bb2', 'bb3']
-        },
-        {
-          id: '2',
-          email: 'sarah.admin@gobarberly.com', 
-          name: 'Sarah Johnson',
-          role: UserRole.ADMIN,
-          createdAt: new Date('2024-02-10'),
-          updatedAt: new Date('2024-02-10'),
-          isActive: true,
-          createdBy: 'super-admin-1',
-          managedBarbershops: ['bb4', 'bb5']
-        }
-      ];
-
-      const mockBarbershops: Barbershop[] = [
-        {
-          id: 'bb1',
-          email: 'owner@cutandstylebarbershop.com',
-          name: 'Mike Wilson',
-          shopName: 'Cut & Style Barbershop',
-          shopOwnerName: 'Mike Wilson',
-          role: UserRole.BARBERSHOP,
-          createdAt: new Date('2024-03-01'),
-          updatedAt: new Date('2024-03-01'),
-          isActive: true,
-          address: '123 Main St, New York, NY',
-          phone: '+1-555-0123',
-          createdBy: '1',
-          subscription: {
-            plan: 'Premium',
-            status: 'active',
-            expiresAt: new Date('2025-03-01')
-          }
-        },
-        {
-          id: 'bb2',
-          email: 'contact@gentlemanscut.com',
-          name: 'David Brown',
-          shopName: "Gentleman's Cut",
-          shopOwnerName: 'David Brown',
-          role: UserRole.BARBERSHOP,
-          createdAt: new Date('2024-03-15'),
-          updatedAt: new Date('2024-03-15'),
-          isActive: true,
-          address: '456 Oak Ave, Los Angeles, CA',
-          phone: '+1-555-0456',
-          createdBy: '1',
-          subscription: {
-            plan: 'Basic',
-            status: 'active',
-            expiresAt: new Date('2025-03-15')
-          }
-        }
-      ];
-
-      setStats(mockStats);
-      setAdmins(mockAdmins);
-      setBarbershops(mockBarbershops);
+      setStats(frontendStats);
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
+      setError(error instanceof Error ? error.message : 'Failed to load dashboard data');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleAddAdmin = (adminData: any) => {
-    // In real app, this would call API
-    const newAdmin: Admin = {
-      id: Date.now().toString(),
-      ...adminData,
-      role: UserRole.ADMIN,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      isActive: true,
-      createdBy: 'current-super-admin-id',
-      managedBarbershops: []
-    };
-    setAdmins(prev => [...prev, newAdmin]);
-    setStats(prev => ({ ...prev, totalAdmins: prev.totalAdmins + 1 }));
-  };
 
-  const handleUpdateAdmin = (adminId: string, updates: any) => {
-    setAdmins(prev => prev.map(admin => 
-      admin.id === adminId 
-        ? { ...admin, ...updates, updatedAt: new Date() }
-        : admin
-    ));
-  };
 
-  const handleDeleteAdmin = (adminId: string) => {
-    setAdmins(prev => prev.filter(admin => admin.id !== adminId));
-    setStats(prev => ({ ...prev, totalAdmins: prev.totalAdmins - 1 }));
-  };
 
-  const handleAddBarbershop = (barbershopData: any) => {
-    const newBarbershop: Barbershop = {
-      id: Date.now().toString(),
-      ...barbershopData,
-      role: UserRole.BARBERSHOP,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      isActive: true,
-      createdBy: 'current-super-admin-id',
-      subscription: {
-        plan: 'Basic',
-        status: 'active',
-        expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 year
-      }
-    };
-    setBarbershops(prev => [...prev, newBarbershop]);
-    setStats(prev => ({ 
-      ...prev, 
-      totalBarbershops: prev.totalBarbershops + 1,
-      activeBarbershops: prev.activeBarbershops + 1
-    }));
-  };
-
-  const handleUpdateBarbershop = (barbershopId: string, updates: any) => {
-    setBarbershops(prev => prev.map(barbershop => 
-      barbershop.id === barbershopId 
-        ? { ...barbershop, ...updates, updatedAt: new Date() }
-        : barbershop
-    ));
-  };
-
-  const handleDeleteBarbershop = (barbershopId: string) => {
-    setBarbershops(prev => prev.filter(barbershop => barbershop.id !== barbershopId));
-    setStats(prev => ({ 
-      ...prev, 
-      totalBarbershops: prev.totalBarbershops - 1,
-      activeBarbershops: prev.activeBarbershops - 1
-    }));
-  };
 
   if (isLoading) {
     return (
@@ -194,6 +68,22 @@ const SuperAdminDashboard: React.FC = () => {
       </div>
     );
   }
+
+  if (error) {
+    return (
+      <div className={styles.dashboard}>
+        <div className={styles.error}>
+          <h2>Error Loading Dashboard</h2>
+          <p>{error}</p>
+          <Button onClick={loadDashboardData}>Try Again</Button>
+        </div>
+      </div>
+    );
+  }
+
+
+
+
 
   return (
     <div className={styles.dashboard}>
@@ -205,7 +95,7 @@ const SuperAdminDashboard: React.FC = () => {
             <p>Manage the entire GoBarberly system</p>
           </div>
           <div className={styles.headerActions}>
-            <span className={styles.welcomeText}>Welcome, {user?.name}</span>
+            <span className={styles.welcomeText}>Welcome, {state.user?.name}</span>
             <Button
               onClick={async () => {
                 console.log('SuperAdmin logout button clicked'); // Debug log
@@ -244,6 +134,12 @@ const SuperAdminDashboard: React.FC = () => {
         >
           ✂️ Barbershops ({stats.totalBarbershops})
         </button>
+        <button 
+          className={`${styles.tab} ${activeTab === 'archive' ? styles.active : ''}`}
+          onClick={() => setActiveTab('archive')}
+        >
+          🗄️ Archive
+        </button>
       </div>
 
       <div className={styles.content}>
@@ -277,7 +173,7 @@ const SuperAdminDashboard: React.FC = () => {
               <Card className={styles.statCard}>
                 <div className={styles.statIcon}>💰</div>
                 <div className={styles.statContent}>
-                  <h3>${stats.totalRevenue.toLocaleString()}</h3>
+                  <h3>₹{stats.totalRevenue.toLocaleString('en-IN')}</h3>
                   <p>Total Revenue</p>
                 </div>
               </Card>
@@ -313,19 +209,19 @@ const SuperAdminDashboard: React.FC = () => {
 
         {activeTab === 'admins' && (
           <AdminManagement
-            admins={admins}
-            onAdd={handleAddAdmin}
-            onUpdate={handleUpdateAdmin}
-            onDelete={handleDeleteAdmin}
+            onDataChange={() => loadDashboardData()}
           />
         )}
 
         {activeTab === 'barbershops' && (
           <BarbershopManagement
-            barbershops={barbershops}
-            onAdd={handleAddBarbershop}
-            onUpdate={handleUpdateBarbershop}
-            onDelete={handleDeleteBarbershop}
+            onDataChange={() => loadDashboardData()}
+          />
+        )}
+
+        {activeTab === 'archive' && (
+          <ArchiveManagement
+            onDataChange={() => loadDashboardData()}
           />
         )}
       </div>

@@ -1,0 +1,241 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.barbershopInfo {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #f8fafc;
+}
+
+.barbershopInfo h4 {
+  margin: 0 0 1rem 0;
+  color: #1e293b;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.infoCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.infoRow:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-weight: 500;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.value {
+  font-weight: 600;
+  color: #1e293b;
+  text-align: right;
+  flex: 1;
+  margin-left: 1rem;
+}
+
+.transferSection {
+  border: 1px solid #ddd6fe;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #faf5ff;
+}
+
+.transferSection h4 {
+  margin: 0 0 1rem 0;
+  color: #7c3aed;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+.noAdmins {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+}
+
+.noAdmins p {
+  margin: 0;
+  font-style: italic;
+}
+
+.adminSelect {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: white;
+  transition: border-color 0.2s;
+}
+
+.adminSelect:focus {
+  outline: none;
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.selectedAdminPreview {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.selectedAdminPreview h5 {
+  margin: 0 0 0.75rem 0;
+  color: #374151;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.adminCard {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.adminInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.adminName {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 1rem;
+}
+
+.adminEmail {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.warningSection {
+  margin-top: 1rem;
+}
+
+.warning {
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.warning h5 {
+  margin: 0 0 0.75rem 0;
+  color: #92400e;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.warning p {
+  margin: 0 0 0.75rem 0;
+  color: #92400e;
+  line-height: 1.5;
+}
+
+.warning p:last-of-type {
+  margin-bottom: 0.5rem;
+}
+
+.warning ul {
+  margin: 0.5rem 0 0 0;
+  padding-left: 1.25rem;
+  color: #92400e;
+}
+
+.warning li {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.warning li:last-child {
+  margin-bottom: 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.transferButton {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.transferButton:hover:not(:disabled) {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.transferButton:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem;
+    gap: 1rem;
+  }
+  
+  .infoRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .value {
+    text-align: left;
+    margin-left: 0;
+  }
+  
+  .actions {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+  }
+  
+  .actions button {
+    width: 100%;
+  }
+}

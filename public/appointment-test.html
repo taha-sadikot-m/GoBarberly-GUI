@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment System Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: #f5f5f5;
+        }
+        .container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 { 
+            color: #2c3e50; 
+            text-align: center; 
+            border-bottom: 3px solid #3498db; 
+            padding-bottom: 10px;
+        }
+        button { 
+            background: #3498db; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            margin: 10px; 
+        }
+        button:hover { 
+            background: #2980b9; 
+        }
+        .results { 
+            background: #ecf0f1; 
+            padding: 20px; 
+            border-radius: 5px; 
+            margin-top: 20px; 
+            font-family: monospace; 
+            white-space: pre-wrap; 
+            max-height: 500px; 
+            overflow-y: auto;
+        }
+        .success { color: #27ae60; }
+        .error { color: #e74c3c; }
+        .info { color: #3498db; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📅 Appointment System Test</h1>
+        <p>Test the complete appointment booking workflow:</p>
+        
+        <button onclick="testAppointmentCRUD()">🧪 Test Appointment CRUD</button>
+        <button onclick="testAppointmentsList()">📋 Test Appointments List</button>
+        <button onclick="createTestAppointment()">➕ Create Test Appointment</button>
+        <button onclick="clearResults()">🧹 Clear Results</button>
+        
+        <div id="results" class="results">
+Click any test button to start testing appointment functionality...
+        </div>
+    </div>
+
+    <script>
+        let logOutput = '';
+        let testToken = '';
+        
+        function clearResults() {
+            logOutput = '';
+            document.getElementById('results').innerHTML = 'Results cleared. Click any test button to start...';
+        }
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            logOutput += `[${timestamp}] ${message}\n`;
+            document.getElementById('results').innerHTML = logOutput;
+            document.getElementById('results').scrollTop = document.getElementById('results').scrollHeight;
+            console.log(message);
+        }
+        
+        async function getAuthToken() {
+            if (testToken) return testToken;
+            
+            log('🔐 Getting authentication token...', 'info');
+            const loginResponse = await fetch('http://127.0.0.1:8000/api/auth/login/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: '524410034@nitkkr.ac.in',
+                    password: 'Customer@123'
+                })
+            });
+            
+            const loginData = await loginResponse.json();
+            if (!loginData.success) {
+                throw new Error('Login failed: ' + JSON.stringify(loginData));
+            }
+            
+            testToken = loginData.data.access;
+            log('✅ Authentication successful!', 'success');
+            return testToken;
+        }
+        
+        async function testAppointmentsList() {
+            clearResults();
+            log('📋 Testing Appointments List API...', 'info');
+            
+            try {
+                const token = await getAuthToken();
+                const headers = { 'Authorization': `Bearer ${token}` };
+                
+                const response = await fetch('http://127.0.0.1:8000/api/barbershop/appointments/', { headers });
+                const data = await response.json();
+                
+                log(`✅ Found ${data.results.length} appointments:`, 'success');
+                data.results.forEach((apt, index) => {
+                    log(`  ${index + 1}. ${apt.customer_name} - ${apt.service} with ${apt.barber_name}`, 'info');
+                    log(`     Date: ${apt.appointment_date} at ${apt.appointment_time}`, 'info');
+                    log(`     Status: ${apt.status}`, 'info');
+                });
+                
+            } catch (error) {
+                log('❌ Appointments list test failed: ' + error.message, 'error');
+            }
+        }
+        
+        async function createTestAppointment() {
+            clearResults();
+            log('➕ Testing Appointment Creation...', 'info');
+            
+            try {
+                const token = await getAuthToken();
+                const headers = { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                };
+                
+                const appointmentData = {
+                    customer_name: 'Test Customer ' + Date.now(),
+                    customer_phone: '9876543210',
+                    service: 'Haircut',
+                    barber_name: 'Mike Barber',
+                    appointment_date: '2025-11-01',
+                    appointment_time: '15:30',
+                    status: 'confirmed'
+                };
+                
+                log('Creating appointment with data:', 'info');
+                log(JSON.stringify(appointmentData, null, 2), 'info');
+                
+                const response = await fetch('http://127.0.0.1:8000/api/barbershop/appointments/', {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(appointmentData)
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error('API Error: ' + JSON.stringify(errorData));
+                }
+                
+                const newAppointment = await response.json();
+                log('✅ Appointment created successfully!', 'success');
+                log('New appointment ID: ' + newAppointment.id, 'success');
+                log('Full appointment data:', 'info');
+                log(JSON.stringify(newAppointment, null, 2), 'info');
+                
+            } catch (error) {
+                log('❌ Appointment creation failed: ' + error.message, 'error');
+            }
+        }
+        
+        async function testAppointmentCRUD() {
+            clearResults();
+            log('🧪 Testing Complete Appointment CRUD Operations...', 'info');
+            
+            try {
+                const token = await getAuthToken();
+                const headers = { 
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                };
+                
+                // Step 1: Create appointment
+                log('📝 Step 1: Creating new appointment...', 'info');
+                const appointmentData = {
+                    customer_name: 'CRUD Test Customer',
+                    customer_phone: '1234567890',
+                    service: 'Beard Trim',
+                    barber_name: 'Mike Barber',
+                    appointment_date: '2025-11-02',
+                    appointment_time: '16:00',
+                    status: 'confirmed'
+                };
+                
+                const createResponse = await fetch('http://127.0.0.1:8000/api/barbershop/appointments/', {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(appointmentData)
+                });
+                
+                if (!createResponse.ok) {
+                    const errorData = await createResponse.json();
+                    throw new Error('Create failed: ' + JSON.stringify(errorData));
+                }
+                
+                const newAppointment = await createResponse.json();
+                log('✅ Created appointment: ' + newAppointment.id, 'success');
+                
+                // Step 2: Read appointment
+                log('📖 Step 2: Reading appointment...', 'info');
+                const readResponse = await fetch(`http://127.0.0.1:8000/api/barbershop/appointments/${newAppointment.id}/`, { headers });
+                const readAppointment = await readResponse.json();
+                log('✅ Read appointment: ' + readAppointment.customer_name, 'success');
+                
+                // Step 3: Update appointment status
+                log('✏️ Step 3: Updating appointment status...', 'info');
+                const updateResponse = await fetch(`http://127.0.0.1:8000/api/barbershop/appointments/${newAppointment.id}/status/`, {
+                    method: 'PATCH',
+                    headers,
+                    body: JSON.stringify({ status: 'completed' })
+                });
+                const updatedAppointment = await updateResponse.json();
+                log('✅ Updated status to: ' + updatedAppointment.status, 'success');
+                
+                // Step 4: Delete appointment
+                log('🗑️ Step 4: Deleting appointment...', 'info');
+                const deleteResponse = await fetch(`http://127.0.0.1:8000/api/barbershop/appointments/${newAppointment.id}/`, {
+                    method: 'DELETE',
+                    headers
+                });
+                
+                if (deleteResponse.ok) {
+                    log('✅ Appointment deleted successfully!', 'success');
+                } else {
+                    log('⚠️ Delete response: ' + deleteResponse.status, 'warning');
+                }
+                
+                log('🎉 CRUD Test Completed Successfully!', 'success');
+                
+            } catch (error) {
+                log('❌ CRUD test failed: ' + error.message, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

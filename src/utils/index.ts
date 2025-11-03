@@ -132,6 +132,10 @@ export function clsx(...classes: (string | undefined | null | false)[]): string 
   return classes.filter(Boolean).join(' ');
 }
 
+// Export new utilities
+export * from './constants';
+export * from './helpers';
+
 // Form utilities
 export function getServicePrice(service: string): number {
   const prices: { [key: string]: number } = {

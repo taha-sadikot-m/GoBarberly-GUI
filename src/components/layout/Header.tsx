@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Select } from '../ui';
 import { useApp } from '../../context/AppContext';
+import { useAuth } from '../../context/AuthContext';
 import { exportToCsv } from '../../utils';
 import styles from '../../styles/components/Header.module.css';
 import type { RangeType } from '../../types';
@@ -23,6 +24,7 @@ const rangeOptions = [
 const Header: React.FC<HeaderProps> = ({ title, subtitle, onMenuClick }) => {
   const navigate = useNavigate();
   const { state, setRange } = useApp();
+  const { state: authState, logout } = useAuth();
   const [showCustomRange, setShowCustomRange] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [startDate, setStartDate] = useState('');
@@ -108,19 +110,21 @@ const Header: React.FC<HeaderProps> = ({ title, subtitle, onMenuClick }) => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
-    localStorage.removeItem('user');
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 
   const getUserName = () => {
-    const user = localStorage.getItem('user');
-    if (user) {
-      const userData = JSON.parse(user);
-      return userData.name || userData.email;
+    if (authState.user) {
+      const { name, email } = authState.user;
+      return name || email;
     }
     return 'User';
+  };
+
+  const getUserEmail = () => {
+    return authState.user?.email || '';
   };
 
   return (
@@ -178,6 +182,7 @@ const Header: React.FC<HeaderProps> = ({ title, subtitle, onMenuClick }) => {
               <div className={styles.dropdownItem}>
                 <span>Signed in as</span>
                 <strong>{getUserName()}</strong>
+                <span style={{ marginTop: '0.25rem' }}>{getUserEmail()}</span>
               </div>
               <div className={styles.dropdownDivider}></div>
               <button 

@@ -27,6 +27,10 @@ export interface AuthUser {
   role: UserRole;
   shopName?: string; // For barbershop users
   shopOwnerName?: string; // For barbershop users
+  shopLogo?: string; // For barbershop logo URL
+  shop_name?: string; // Backend field name
+  shop_owner_name?: string; // Backend field name
+  shop_logo?: string; // Backend field name
 }
 
 export interface LoginResponse {

@@ -1,64 +1,142 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import Card from '../components/ui/Card';
 import styles from './Auth.module.css';
 import type { LoginCredentials } from '../types/auth';
-import { useAuth } from '../context/AuthContext';
-import { getDashboardPath } from '../components/auth/AuthGuard';
+import { 
+  validateLoginForm, 
+  getFieldErrors, 
+  hasFieldError,
+  LOADING_MESSAGES
+} from '../utils';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isAuthenticated, user, error: authError, clearError } = useAuth();
-  const [formData, setFormData] = useState<LoginCredentials>({
+  const { login, state: authState, clearError } = useAuth();
+  const { showError, showSuccess } = useToast();
+  
+  const [credentials, setCredentials] = useState<LoginCredentials>({
     email: '',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  
-  // Get success message from navigation state (e.g., from password reset)
+  const [validationErrors, setValidationErrors] = useState<any[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Check for success message from password reset or email verification
   const successMessage = location.state?.message;
+
+  // Show success message as toast
+  useEffect(() => {
+    if (successMessage) {
+      showSuccess(successMessage, 'Success');
+      // Clear the success message from navigation state
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [successMessage, navigate, location.pathname, showSuccess]);
+
+  // Show authentication errors as toast
+  useEffect(() => {
+    if (authState.error) {
+      showError(authState.error, 'Login Failed');
+    }
+  }, [authState.error, showError]);
 
   // Redirect if already authenticated
   useEffect(() => {
-    console.log('Login page: Auth state changed', { isAuthenticated, user }); // Debug log
-    if (isAuthenticated && user) {
-      const from = location.state?.from?.pathname || getDashboardPath(user.role);
-      navigate(from, { replace: true });
+    // Only redirect if user is authenticated and not in loading state
+    if (authState.isAuthenticated && authState.user && !authState.isLoading) {
+      console.log('🔄 Login: User authenticated, redirecting...', {
+        user: authState.user,
+        currentLocation: location.pathname,
+        isLoading: authState.isLoading
+      });
+      
+      const from = location.state?.from?.pathname;
+      // Get role-based dashboard path
+      const getDashboardPath = (role: string): string => {
+        switch (role) {
+          case 'super_admin':
+            return '/super-admin';
+          case 'admin':
+            return '/admin';
+          case 'barbershop':
+          default:
+            return '/dashboard';
+        }
+      };
+      
+      const defaultPath = getDashboardPath(authState.user.role);
+      const redirectPath = from && from !== '/login' ? from : defaultPath;
+      
+      console.log('🎯 Login: Navigating to:', redirectPath);
+      // Use a slight delay to ensure state is fully updated
+      setTimeout(() => {
+        navigate(redirectPath, { replace: true });
+      }, 100);
     }
-  }, [isAuthenticated, user, navigate, location]);
+  }, [authState.isAuthenticated, authState.user, authState.isLoading, navigate, location]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Clear error when component unmounts or when user starts typing
+  useEffect(() => {
+    return () => clearError();
+  }, [clearError]);
+
+  const validateForm = (): boolean => {
+    const validation = validateLoginForm(credentials.email, credentials.password);
+    setValidationErrors(validation.errors);
+    return validation.isValid;
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setCredentials(prev => ({
       ...prev,
       [name]: value
     }));
-    // Clear error when user starts typing
-    if (authError) clearError();
+    
+    // Clear validation errors when user starts typing
+    if (hasFieldError(validationErrors, name)) {
+      const filteredErrors = validationErrors.filter(error => error.field !== name);
+      setValidationErrors(filteredErrors);
+    }
+    
+    // Clear auth error when user starts typing
+    if (authState.error) {
+      clearError();
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Basic validation
-    if (!formData.email || !formData.password) {
+    
+    if (!validateForm()) {
       return;
     }
 
-    if (!formData.email.includes('@')) {
-      return;
-    }
-
+    setIsSubmitting(true);
+    
     try {
-      await login(formData);
-      // Navigation is handled by the useEffect hook
-    } catch (err) {
-      // Error is handled by the AuthContext
+      const result = await login(credentials);
+      
+      if (result.success && result.user) {
+        // Navigation is handled by the useEffect hook above
+        console.log('Login successful, navigation will be handled by useEffect');
+      }
+    } catch (error) {
+      // Error is handled by the auth context
+      console.error('Login failed:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+
 
   return (
     <div className={styles.authContainer}>
@@ -75,19 +153,7 @@ const Login: React.FC = () => {
             <h2>Welcome Back</h2>
             <p className={styles.subtitle}>Sign in to your account</p>
 
-            {successMessage && (
-              <div className={styles.success}>
-                <span>✅</span>
-                {successMessage}
-              </div>
-            )}
 
-            {authError && (
-              <div className={styles.error}>
-                <span>⚠️</span>
-                {authError}
-              </div>
-            )}
 
             <div className={styles.inputGroup}>
               <label htmlFor="email">Email Address</label>
@@ -95,12 +161,17 @@ const Login: React.FC = () => {
                 id="email"
                 name="email"
                 type="email"
-                value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Enter your email"
-                  disabled={false}
+                value={credentials.email}
+                onChange={handleInputChange}
+                placeholder="Enter your email address"
+                disabled={authState.isLoading || isSubmitting}
                 required
               />
+              {hasFieldError(validationErrors, 'email') && (
+                <div className={styles.fieldError}>
+                  {getFieldErrors(validationErrors, 'email')[0]}
+                </div>
+              )}
             </div>
 
             <div className={styles.inputGroup}>
@@ -110,21 +181,27 @@ const Login: React.FC = () => {
                   id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  value={formData.password}
-                  onChange={handleChange}
+                  value={credentials.password}
+                  onChange={handleInputChange}
                   placeholder="Enter your password"
-                  disabled={false}
+                  disabled={authState.isLoading || isSubmitting}
                   required
                 />
                 <button
                   type="button"
                   className={styles.passwordToggle}
                   onClick={() => setShowPassword(!showPassword)}
-                  disabled={false}
+                  disabled={authState.isLoading || isSubmitting}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? '👁️' : '🙈'}
                 </button>
               </div>
+              {hasFieldError(validationErrors, 'password') && (
+                <div className={styles.fieldError}>
+                  {getFieldErrors(validationErrors, 'password')[0]}
+                </div>
+              )}
             </div>
 
             <div className={styles.formActions}>
@@ -136,19 +213,25 @@ const Login: React.FC = () => {
             <Button
               type="submit"
               className={styles.submitButton}
-              disabled={false || !formData.email || !formData.password}
+              disabled={authState.isLoading || isSubmitting || !credentials.email || !credentials.password}
             >
-              Sign In
+              {(authState.isLoading || isSubmitting) ? (
+                <>
+                  <span className={styles.spinner}></span>
+                  {LOADING_MESSAGES.LOGGING_IN}
+                </>
+              ) : (
+                'Sign In'
+              )}
             </Button>
 
+            {/* Demo section - remove in production */}
             <div className={styles.demo}>
-              <p>Demo Credentials:</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.75rem' }}>
-                <code>superadmin@gobarberly.com / admin123</code>
-                <code>admin@gobarberly.com / admin123</code>
-                <code>barbershop@gobarberly.com / admin123</code>
-              </div>
+              
+              
             </div>
+
+            
           </form>
         </Card>
       </div>

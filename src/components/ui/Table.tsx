@@ -21,12 +21,12 @@ function Table<T extends Record<string, any>>({
         <tbody>
           {data.map((item, index) => (
             <tr
-              key={index}
+              key={item.id || index}
               className={styles.tr}
               onClick={() => onRowClick?.(item)}
             >
               {columns.map((column) => (
-                <td key={String(column.key)} className={styles.td}>
+                <td key={`${item.id || index}-${String(column.key)}`} className={styles.td}>
                   {column.render
                     ? column.render(item[column.key], item)
                     : String(item[column.key] || '')}

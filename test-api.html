@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin API Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        button { padding: 10px 15px; margin: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        .result { margin: 10px 0; padding: 10px; background: #f5f5f5; }
+        pre { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Super Admin API Integration Test</h1>
+    
+    <div class="test-section">
+        <h3>🧪 Routing Test</h3>
+        <p>Test if React Router navigation is working:</p>
+        <a href="/test" style="margin-right: 10px;">→ Test Route</a>
+        <a href="/login" style="margin-right: 10px;">→ Login Page</a>
+        <a href="/super-admin" style="margin-right: 10px;">→ Super Admin (needs auth)</a>
+        <div id="routingInfo" class="result">
+            <strong>Current URL:</strong> <span id="currentUrl"></span><br>
+            <strong>Base URL:</strong> <span id="baseUrl"></span>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h3>1. Authentication Test</h3>
+        <input type="email" id="loginEmail" placeholder="Super Admin Email" value="superadmin@gobarberly.com">
+        <input type="password" id="loginPassword" placeholder="Password" value="SuperAdmin123!">
+        <button onclick="testLogin()">Test Login</button>
+        <div id="loginResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>2. Dashboard Data Test</h3>
+        <button onclick="testDashboard()">Load Dashboard Data</button>
+        <div id="dashboardResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>3. Admin Management Test</h3>
+        <button onclick="testGetAdmins()">Get Admins</button>
+        <button onclick="testCreateAdmin()">Create Test Admin</button>
+        <div id="adminResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>4. Barbershop Management Test</h3>
+        <button onclick="testGetBarbershops()">Get Barbershops</button>
+        <button onclick="testCreateBarbershop()">Create Test Barbershop</button>
+        <div id="barbershopResult" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000/api';
+        let authToken = null;
+
+        function logResult(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="${isError ? 'error' : 'success'}">${message}</div>`;
+            console.log(message);
+        }
+
+        // Update routing info
+        function updateRoutingInfo() {
+            document.getElementById('currentUrl').textContent = window.location.href;
+            document.getElementById('baseUrl').textContent = window.location.origin;
+        }
+
+        // Update routing info on page load and when URL changes
+        window.addEventListener('load', updateRoutingInfo);
+        window.addEventListener('popstate', updateRoutingInfo);
+        setInterval(updateRoutingInfo, 1000); // Check every second
+
+        async function testLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    authToken = data.data.access_token;
+                    logResult('loginResult', `✅ Login Successful!<br><strong>Token:</strong> ${authToken.substring(0, 50)}...<br><strong>User:</strong> ${data.data.user.email}<br><strong>Role:</strong> ${data.data.user.role}`);
+                } else {
+                    logResult('loginResult', `❌ Login Failed: ${data.message || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                logResult('loginResult', `❌ Login Error: ${error.message}`, true);
+            }
+        }
+
+        async function testDashboard() {
+            if (!authToken) {
+                logResult('dashboardResult', '❌ Please login first!', true);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/super-admin/dashboard/data/`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    logResult('dashboardResult', `✅ Dashboard Data Loaded!<br><pre>${JSON.stringify(data, null, 2)}</pre>`);
+                } else {
+                    logResult('dashboardResult', `❌ Dashboard Error: ${data.message || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                logResult('dashboardResult', `❌ Dashboard Error: ${error.message}`, true);
+            }
+        }
+
+        async function testGetAdmins() {
+            if (!authToken) {
+                logResult('adminResult', '❌ Please login first!', true);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/super-admin/admins/`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    logResult('adminResult', `✅ Admins Retrieved! Count: ${data.data.length}<br><pre>${JSON.stringify(data.data.slice(0,2), null, 2)}</pre>`);
+                } else {
+                    logResult('adminResult', `❌ Get Admins Error: ${data.message || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                logResult('adminResult', `❌ Get Admins Error: ${error.message}`, true);
+            }
+        }
+
+        async function testCreateAdmin() {
+            if (!authToken) {
+                logResult('adminResult', '❌ Please login first!', true);
+                return;
+            }
+
+            const testAdmin = {
+                email: `testadmin${Date.now()}@gobarberly.com`,
+                first_name: 'Test',
+                last_name: 'Admin',
+                password: 'testpass123',
+                password_confirm: 'testpass123'
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/super-admin/admins/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testAdmin)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    logResult('adminResult', `✅ Admin Created Successfully!<br><strong>Email:</strong> ${data.data.email}<br><strong>ID:</strong> ${data.data.id}`);
+                } else {
+                    logResult('adminResult', `❌ Create Admin Error: ${data.message || JSON.stringify(data)}`, true);
+                }
+            } catch (error) {
+                logResult('adminResult', `❌ Create Admin Error: ${error.message}`, true);
+            }
+        }
+
+        async function testGetBarbershops() {
+            if (!authToken) {
+                logResult('barbershopResult', '❌ Please login first!', true);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/super-admin/barbershops/`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    logResult('barbershopResult', `✅ Barbershops Retrieved! Count: ${data.data.length}<br><pre>${JSON.stringify(data.data.slice(0,2), null, 2)}</pre>`);
+                } else {
+                    logResult('barbershopResult', `❌ Get Barbershops Error: ${data.message || 'Unknown error'}`, true);
+                }
+            } catch (error) {
+                logResult('barbershopResult', `❌ Get Barbershops Error: ${error.message}`, true);
+            }
+        }
+
+        async function testCreateBarbershop() {
+            if (!authToken) {
+                logResult('barbershopResult', '❌ Please login first!', true);
+                return;
+            }
+
+            const testBarbershop = {
+                email: `barbershop${Date.now()}@gobarberly.com`,
+                shop_name: 'Test Barbershop',
+                shop_owner_name: 'Test Owner',
+                password: 'testpass123',
+                password_confirm: 'testpass123',
+                subscription_plan: 'basic'
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/super-admin/barbershops/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testBarbershop)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    logResult('barbershopResult', `✅ Barbershop Created Successfully!<br><strong>Shop:</strong> ${data.data.shop_name}<br><strong>ID:</strong> ${data.data.id}`);
+                } else {
+                    logResult('barbershopResult', `❌ Create Barbershop Error: ${data.message || JSON.stringify(data)}`, true);
+                }
+            } catch (error) {
+                logResult('barbershopResult', `❌ Create Barbershop Error: ${error.message}`, true);
+            }
+        }
+    </script>
+</body>
+</html>

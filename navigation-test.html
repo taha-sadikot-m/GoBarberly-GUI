@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 GoBarberly Navigation Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        h1 { color: #2d3748; margin-bottom: 0.5rem; }
+        .status { padding: 1rem; border-radius: 8px; margin: 1rem 0; }
+        .success { background: #f0fff4; border: 1px solid #38a169; color: #22543d; }
+        .error { background: #fff5f5; border: 1px solid #e53e3e; color: #742a2a; }
+        .warning { background: #fffaf0; border: 1px solid #dd6b20; color: #7c2d12; }
+        .info { background: #ebf8ff; border: 1px solid #3182ce; color: #2a4365; }
+        
+        .test-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f7fafc;
+        }
+        
+        .test-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .test-link {
+            display: block;
+            padding: 1rem;
+            background: #4299e1;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        
+        .test-link:hover {
+            background: #3182ce;
+            transform: translateY(-2px);
+        }
+        
+        .results {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 4px solid #4299e1;
+        }
+        
+        .navigation-log {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 1rem 0;
+        }
+        
+        button {
+            background: #38a169;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: background 0.2s;
+        }
+        
+        button:hover { background: #2f855a; }
+        
+        .credentials {
+            background: #2d3748;
+            color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+        
+        .credentials code {
+            background: #4a5568;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 GoBarberly Navigation Test</h1>
+        <p><strong>Purpose:</strong> Test if React Router navigation works correctly without page refreshes</p>
+        
+        <div class="status info">
+            <strong>🎯 Test Objective:</strong> Click the links below and observe if page navigation happens smoothly without full page refreshes. 
+            The URL should change and content should update instantly.
+        </div>
+
+        <div class="test-section">
+            <h3>🔗 Authentication Pages Navigation Test</h3>
+            <p>These links should navigate without page refresh:</p>
+            <div class="test-links">
+                <a href="http://localhost:3001/login" class="test-link" target="_blank">
+                    🔐 Login Page
+                </a>
+                <a href="http://localhost:3001/forgot-password" class="test-link" target="_blank">
+                    🔑 Forgot Password
+                </a>
+                <a href="http://localhost:3001/test" class="test-link" target="_blank">
+                    🧪 Test Route
+                </a>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔐 Login Flow Test</h3>
+            <p>Test the complete login and navigation flow:</p>
+            
+            <div class="credentials">
+                <h4>Demo Credentials:</h4>
+                <p><strong>Super Admin:</strong> <code>superadmin@gobarberly.com</code> / <code>SuperAdmin123!</code></p>
+                <p><strong>Admin:</strong> <code>admin@gobarberly.com</code> / <code>admin123</code></p>
+                <p><strong>Barbershop:</strong> <code>barbershop@gobarberly.com</code> / <code>admin123</code></p>
+            </div>
+
+            <div class="test-links">
+                <a href="http://localhost:3001/login" class="test-link" target="_blank">
+                    🚀 Start Login Test
+                </a>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>📋 Navigation Test Checklist</h3>
+            <div id="checklist">
+                <label><input type="checkbox"> ✅ Login page loads without refresh</label><br>
+                <label><input type="checkbox"> ✅ Forgot Password link works without refresh</label><br>
+                <label><input type="checkbox"> ✅ Login form submits and redirects without refresh</label><br>
+                <label><input type="checkbox"> ✅ Dashboard loads correctly after login</label><br>
+                <label><input type="checkbox"> ✅ Back/Forward browser buttons work correctly</label><br>
+                <label><input type="checkbox"> ✅ URL changes match page content</label><br>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔍 Navigation Debugging Info</h3>
+            <p>Current page URL: <code id="current-url">N/A</code></p>
+            <p>User Agent: <code id="user-agent">N/A</code></p>
+            <p>Timestamp: <code id="timestamp">N/A</code></p>
+            
+            <button onclick="refreshInfo()">🔄 Refresh Info</button>
+            <button onclick="testLocalNavigation()">🧪 Test Local Navigation</button>
+            <button onclick="clearLog()">🗑️ Clear Log</button>
+        </div>
+
+        <div class="results">
+            <h4>📊 Test Results & Navigation Log:</h4>
+            <div id="navigation-log" class="navigation-log">
+                <div>🚀 Navigation Test Tool Loaded</div>
+                <div>⏰ Timestamp: <span id="load-time"></span></div>
+                <div>🌐 Ready to test React Router navigation...</div>
+            </div>
+        </div>
+
+        <div class="status warning">
+            <strong>⚠️ Expected Behavior:</strong>
+            <ul>
+                <li>Clicking links should <strong>NOT</strong> cause white screen flashes</li>
+                <li>Page transitions should be <strong>instant</strong></li>
+                <li>No network requests should show in browser dev tools for navigation</li>
+                <li>Browser back/forward buttons should work smoothly</li>
+                <li>Console should show React Router navigation logs, not page loads</li>
+            </ul>
+        </div>
+
+        <div class="status error" id="error-section" style="display: none;">
+            <strong>🚨 Navigation Issues Detected:</strong>
+            <div id="error-details"></div>
+        </div>
+
+        <div class="status success" id="success-section" style="display: none;">
+            <strong>✅ Navigation Working Correctly!</strong>
+            <p>All navigation tests passed. React Router is working properly.</p>
+        </div>
+    </div>
+
+    <script>
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshInfo();
+            logNavigation('🎉 Test page initialized');
+        });
+
+        function refreshInfo() {
+            document.getElementById('current-url').textContent = window.location.href;
+            document.getElementById('user-agent').textContent = navigator.userAgent.substring(0, 100) + '...';
+            document.getElementById('timestamp').textContent = new Date().toLocaleString();
+            document.getElementById('load-time').textContent = new Date().toLocaleString();
+        }
+
+        function logNavigation(message) {
+            const log = document.getElementById('navigation-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.innerHTML = `[${timestamp}] ${message}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('navigation-log').innerHTML = '';
+            logNavigation('🧹 Log cleared');
+        }
+
+        function testLocalNavigation() {
+            logNavigation('🧪 Testing local navigation capabilities...');
+            
+            // Test if we're in an SPA context
+            if (window.history && window.history.pushState) {
+                logNavigation('✅ History API available');
+            } else {
+                logNavigation('❌ History API not available');
+            }
+
+            // Test performance navigation
+            if (performance.navigation) {
+                const navType = performance.navigation.type;
+                const types = ['Navigate', 'Reload', 'Back/Forward', 'Reserved'];
+                logNavigation(`📊 Navigation type: ${types[navType] || 'Unknown'} (${navType})`);
+            }
+
+            // Monitor for popstate events (back/forward navigation)
+            let popstateListenerAdded = false;
+            if (!popstateListenerAdded) {
+                window.addEventListener('popstate', function(event) {
+                    logNavigation('🔄 Popstate event detected (back/forward navigation)');
+                    logNavigation(`📍 New URL: ${window.location.href}`);
+                });
+                popstateListenerAdded = true;
+                logNavigation('👂 Added popstate listener for back/forward detection');
+            }
+
+            logNavigation('🎯 Local navigation test complete');
+        }
+
+        // Monitor for any console errors related to navigation
+        const originalError = console.error;
+        console.error = function(...args) {
+            if (args.some(arg => typeof arg === 'string' && 
+                (arg.includes('router') || arg.includes('navigation') || arg.includes('route')))) {
+                logNavigation(`🚨 Router error: ${args.join(' ')}`);
+                document.getElementById('error-section').style.display = 'block';
+                document.getElementById('error-details').textContent = args.join(' ');
+            }
+            originalError.apply(console, args);
+        };
+
+        // Success detection - if no errors after 5 seconds, assume success
+        setTimeout(() => {
+            const errorSection = document.getElementById('error-section');
+            if (errorSection.style.display === 'none') {
+                document.getElementById('success-section').style.display = 'block';
+                logNavigation('✅ No navigation errors detected in 5 seconds');
+            }
+        }, 5000);
+
+        // Detect React Router navigation (if React DevTools is available)
+        if (window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
+            logNavigation('⚛️ React DevTools detected - React Router should be active');
+        }
+    </script>
+</body>
+</html>

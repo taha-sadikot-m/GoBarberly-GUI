@@ -1,0 +1,332 @@
+/* BarbershopReports CSS Module */
+.reports {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Report Controls Section */
+.reportControls {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.reportControls h2 {
+  margin: 0 0 1rem 0;
+  color: #334155;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.reportControls h3 {
+  margin: 0 0 1rem 0;
+  color: #475569;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+/* Controls Grid */
+.controlsGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  align-items: end;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.controlsGrid label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.generateButton {
+  height: fit-content;
+  padding: 0.75rem 1.5rem;
+  white-space: nowrap;
+}
+
+/* Summary Controls */
+.summaryControls {
+  padding: 1.5rem;
+  background: #f1f5f9;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+}
+
+.dateControls {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+  align-items: end;
+}
+
+.dateControls label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+/* Metrics Grid */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.metricCard {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.metricCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.metricContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+}
+
+.metricText h3 {
+  margin: 0 0 0.5rem 0;
+  color: #64748b;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metricValue {
+  margin: 0 0 0.25rem 0;
+  color: #1e293b;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.metricPeriod {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.8rem;
+}
+
+.metricIcon {
+  font-size: 2.5rem;
+  opacity: 0.8;
+}
+
+/* Services Performance */
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.serviceItem {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  transition: background-color 0.2s ease;
+}
+
+.serviceItem:hover {
+  background: #f1f5f9;
+}
+
+.serviceName {
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.serviceRevenue {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #059669;
+  margin-bottom: 0.25rem;
+}
+
+.serviceCount {
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+/* Staff Performance */
+.staffGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.staffItem {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: #fef3c7;
+  border-radius: 8px;
+  border: 1px solid #fbbf24;
+  transition: background-color 0.2s ease;
+}
+
+.staffItem:hover {
+  background: #fef9c3;
+}
+
+.staffName {
+  font-weight: 600;
+  color: #92400e;
+  margin-bottom: 0.5rem;
+}
+
+.staffRevenue {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #b45309;
+  margin-bottom: 0.25rem;
+}
+
+.staffCount {
+  font-size: 0.9rem;
+  color: #a16207;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #64748b;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 2px dashed #cbd5e1;
+}
+
+.emptyState h3 {
+  margin: 0 0 0.5rem 0;
+  color: #475569;
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.emptyStateIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* Loading State */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  color: #64748b;
+}
+
+.loading::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid #e2e8f0;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 0.5rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error State */
+.error {
+  text-align: center;
+  padding: 2rem;
+  color: #dc2626;
+  background: #fef2f2;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .reports {
+    padding: 1.5rem;
+  }
+  
+  .controlsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .dateControls {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .reports {
+    padding: 1rem;
+  }
+  
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .servicesGrid,
+  .staffGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .metricValue {
+    font-size: 1.5rem;
+  }
+  
+  .metricIcon {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .reports {
+    padding: 0.5rem;
+  }
+  
+  .controlsGrid,
+  .summaryControls {
+    padding: 1rem;
+  }
+  
+  .metricContent {
+    padding: 1rem;
+  }
+}

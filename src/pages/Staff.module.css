@@ -96,6 +96,234 @@
 .availabilityControls {
   display: flex;
   gap: 0.5rem;
+  align-items: center;
+}
+
+.availabilitySubtitle {
+  margin: 0;
+  padding: 0 1.5rem;
+  font-size: 0.875rem;
+  color: var(--slate-500);
+  margin-bottom: 1rem;
+}
+
+.dateInput {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background: #fff;
+  font-size: 0.9rem;
+}
+
+/* Enhanced schedule grid */
+.scheduleGrid {
+  display: grid;
+  grid-template-columns: 150px repeat(7, 1fr);
+  gap: 0.5rem;
+  padding: 0 1.5rem 1.5rem;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+@media (max-width: 860px) {
+  .scheduleGrid {
+    grid-template-columns: 120px repeat(7, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .scheduleGrid {
+    grid-template-columns: 100px repeat(7, 1fr);
+    font-size: 0.75rem;
+  }
+}
+
+.timeLabel {
+  font-weight: 600;
+  background: var(--slate-100);
+  color: var(--slate-700);
+  cursor: default;
+}
+
+.booked {
+  background: var(--green-500);
+  color: #fff;
+  cursor: pointer;
+}
+
+.unavailable {
+  background: #fef3c7;
+  color: #92400e;
+  cursor: pointer;
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  padding: 0 1.5rem 1.5rem;
+  flex-wrap: wrap;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--slate-600);
+}
+
+.legendColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid var(--slate-300);
+}
+
+.legendColor.available {
+  background: var(--green-500);
+}
+
+.legendColor.booked {
+  background: var(--green-500);
+}
+
+.legendColor.unavailable {
+  background: #fef3c7;
+}
+
+.legendColor.off {
+  background: #fff0f0;
+}
+
+/* Today View Styles */
+.todayGrid {
+  padding: 0 1.5rem 1.5rem;
+}
+
+.todayHeader {
+  text-align: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--indigo-500), var(--purple-500));
+  color: white;
+  border-radius: 8px;
+}
+
+.todayHeader h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.detailedGrid {
+  display: grid;
+  grid-template-columns: 150px repeat(10, 1fr);
+  gap: 0.25rem;
+  margin-bottom: 1.5rem;
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid var(--slate-200);
+  border-radius: 8px;
+  background: white;
+}
+
+.staffName {
+  background: var(--slate-100);
+  color: var(--slate-700);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 0.5rem;
+  border-right: 2px solid var(--slate-300);
+}
+
+.timeSlot {
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  border: 1px solid var(--slate-200);
+}
+
+.timeSlot:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.timeSlot.available {
+  background: var(--green-500);
+  color: white;
+}
+
+.timeSlot.unavailable {
+  background: var(--slate-300);
+  color: var(--slate-600);
+}
+
+.instructions {
+  background: var(--slate-50);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid var(--indigo-500);
+}
+
+.instructions p {
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+  color: var(--slate-700);
+}
+
+.instructions ul {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: var(--slate-600);
+}
+
+.instructions li {
+  margin-bottom: 0.25rem;
+}
+
+/* Responsive design for today view */
+@media (max-width: 1024px) {
+  .detailedGrid {
+    grid-template-columns: 120px repeat(10, 1fr);
+    gap: 0.2rem;
+  }
+  
+  .timeSlot {
+    font-size: 0.85rem;
+    padding: 0.4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .detailedGrid {
+    grid-template-columns: 100px repeat(10, 1fr);
+    gap: 0.15rem;
+    font-size: 0.75rem;
+  }
+  
+  .timeSlot {
+    font-size: 0.75rem;
+    padding: 0.3rem;
+  }
+  
+  .staffName {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .detailedGrid {
+    grid-template-columns: 80px repeat(10, 1fr);
+    gap: 0.1rem;
+  }
+  
+  .timeSlot {
+    font-size: 0.7rem;
+    padding: 0.25rem;
+  }
 }
 
 .scheduleGridContainer {

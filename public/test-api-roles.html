@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Role Test</title>
+</head>
+<body>
+    <h1>API Role Testing</h1>
+    <div id="results"></div>
+    
+    <script>
+        // Test function to verify role-based API service routing
+        async function testRoleBasedAPI() {
+            const results = document.getElementById('results');
+            
+            try {
+                // Test Admin User Login
+                const adminResponse = await fetch('http://127.0.0.1:8000/api/auth/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'taha.sadikot.m@gmail.com',
+                        password: 'Admin@123'
+                    })
+                });
+                
+                const adminData = await adminResponse.json();
+                console.log('Admin login:', adminData);
+                
+                if (adminData.success) {
+                    // Test Admin barbershop access
+                    const adminBarbershopsResponse = await fetch('http://127.0.0.1:8000/api/admin/barbershops/', {
+                        headers: {
+                            'Authorization': `Bearer ${adminData.data.access}`
+                        }
+                    });
+                    
+                    const adminBarbershops = await adminBarbershopsResponse.json();
+                    console.log('Admin barbershops access:', adminBarbershops);
+                    
+                    results.innerHTML += `
+                        <div style="color: green;">
+                            ✅ Admin User (${adminData.data.user.email}) successfully accessed barbershop endpoints<br>
+                            - Role: ${adminData.data.user.role}<br>
+                            - Barbershops endpoint: ${adminBarbershopsResponse.status === 200 ? 'SUCCESS' : 'FAILED'}<br>
+                            - Response: ${JSON.stringify(adminBarbershops)}<br><br>
+                        </div>
+                    `;
+                }
+                
+                // Test Super Admin User Login
+                const superAdminResponse = await fetch('http://127.0.0.1:8000/api/auth/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: '19bmiit087@gmail.com',
+                        password: 'Super@123'
+                    })
+                });
+                
+                const superAdminData = await superAdminResponse.json();
+                console.log('Super Admin login:', superAdminData);
+                
+                if (superAdminData.success) {
+                    // Test Super Admin barbershop access
+                    const superAdminBarbershopsResponse = await fetch('http://127.0.0.1:8000/api/super-admin/barbershops/', {
+                        headers: {
+                            'Authorization': `Bearer ${superAdminData.data.access}`
+                        }
+                    });
+                    
+                    const superAdminBarbershops = await superAdminBarbershopsResponse.json();
+                    console.log('Super Admin barbershops access:', superAdminBarbershops);
+                    
+                    results.innerHTML += `
+                        <div style="color: blue;">
+                            ✅ Super Admin User (${superAdminData.data.user.email}) successfully accessed barbershop endpoints<br>
+                            - Role: ${superAdminData.data.user.role}<br>
+                            - Barbershops endpoint: ${superAdminBarbershopsResponse.status === 200 ? 'SUCCESS' : 'FAILED'}<br>
+                            - Response: ${JSON.stringify(superAdminBarbershops)}<br><br>
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                console.error('Test failed:', error);
+                results.innerHTML += `<div style="color: red;">❌ Test failed: ${error.message}</div>`;
+            }
+        }
+        
+        // Run test when page loads
+        window.onload = testRoleBasedAPI;
+    </script>
+</body>
+</html>

@@ -83,8 +83,95 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 860px) {
+  /* Touch-friendly tap targets */
+  button, 
+  [role="button"],
+  input[type="button"],
+  input[type="submit"],
+  .btn {
+    min-height: 44px; /* iOS recommended minimum */
+    min-width: 44px;
+  }
+  
+  /* Prevent text selection on touch devices */
+  .sidebar,
+  .header,
+  button,
+  [role="button"] {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Improve scrolling on touch devices */
+  .content,
+  .main {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Prevent zoom on form inputs */
+  input,
+  select,
+  textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Responsive tables */
+@media (max-width: 860px) {
+  /* Make tables horizontally scrollable */
+  .table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  table {
+    min-width: 600px; /* Prevent table from being too narrow */
+  }
+  
+  th, td {
+    padding: 0.5rem !important;
+    font-size: 0.875rem;
+  }
+  
+  /* Stack forms on mobile */
+  .form {
+    display: block !important;
+  }
+  
+  .form > * {
+    width: 100% !important;
+    margin: 0.5rem 0 !important;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+  
+  /* Smaller padding for mobile */
+  .card {
+    padding: 1rem !important;
+    margin: 0.5rem 0 !important;
+  }
+  
+  /* Even smaller table text */
+  th, td {
+    padding: 0.375rem !important;
+    font-size: 0.8rem;
+  }
+  
+  /* Hide less important columns on very small screens */
+  .table .hide-mobile {
+    display: none !important;
+  }
 }
 
 /* Utility Classes - Matching Original HTML */

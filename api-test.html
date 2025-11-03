@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Connection Test</title>
+</head>
+<body>
+    <h1>Barbershop API Connection Test</h1>
+    <button onclick="testLogin()">Test Login</button>
+    <button onclick="testDashboard()">Test Dashboard</button>
+    <div id="result"></div>
+
+    <script>
+        async function testLogin() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/auth/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: '524410034@nitkkr.ac.in',
+                        password: 'Customer@123'
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('Login response:', data);
+                
+                if (data.success) {
+                    localStorage.setItem('access_token', data.data.access);
+                    document.getElementById('result').innerHTML = '<p style="color: green;">✅ Login successful!</p>';
+                } else {
+                    document.getElementById('result').innerHTML = '<p style="color: red;">❌ Login failed</p>';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                document.getElementById('result').innerHTML = '<p style="color: red;">❌ Login error: ' + error.message + '</p>';
+            }
+        }
+
+        async function testDashboard() {
+            try {
+                const token = localStorage.getItem('access_token');
+                if (!token) {
+                    document.getElementById('result').innerHTML = '<p style="color: orange;">⚠️ Please login first</p>';
+                    return;
+                }
+
+                const response = await fetch('http://127.0.0.1:8000/api/barbershop/dashboard/stats/', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                console.log('Dashboard response:', data);
+                
+                document.getElementById('result').innerHTML = '<p style="color: green;">✅ Dashboard data: ' + JSON.stringify(data, null, 2) + '</p>';
+            } catch (error) {
+                console.error('Dashboard error:', error);
+                document.getElementById('result').innerHTML = '<p style="color: red;">❌ Dashboard error: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,7 +1,108 @@
-.customers {
+.customers,
+.history {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+/* History/Activity specific styles */
+.header {
+  margin-bottom: 1.5rem;
+}
+
+.header h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.header p {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--slate-600);
+}
+
+/* Filters Card Styles */
+.filtersCard {
+  padding: 1.5rem;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.searchGroup {
+  flex: 1;
+  max-width: 400px;
+}
+
+.filterGroup {
+  flex: 0 0 auto;
+  min-width: 200px;
+}
+
+.searchInput {
+  width: 100%;
+}
+
+.summary {
+  margin: 1rem 0;
+}
+
+.summary p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--slate-600);
+}
+
+/* Stats Grid Styles */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statsCard {
+  padding: 1.5rem;
+}
+
+.statsContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.statsText h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--slate-600);
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.statsNumber {
+  margin: 0 0 0.25rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--slate-900);
+  line-height: 1;
+}
+
+.statsDetail {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--slate-500);
+}
+
+.statsIcon {
+  font-size: 2rem;
+  opacity: 0.7;
 }
 
 .tableHeader {
@@ -78,7 +179,18 @@
 }
 
 /* Responsive design */
+@media (max-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
   .tableHeader {
     flex-direction: column;
     gap: 1rem;
@@ -104,8 +216,135 @@
   }
 }
 
+/* Activity Detail Styles */
+.dateCell {
+  font-size: 0.875rem;
+}
+
+.date {
+  font-weight: 500;
+  color: var(--slate-700);
+}
+
+.entityType {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.entityIcon {
+  font-size: 1rem;
+}
+
+.description {
+  max-width: 300px;
+  word-wrap: break-word;
+  font-size: 0.875rem;
+}
+
+.user {
+  font-size: 0.875rem;
+  color: var(--slate-600);
+}
+
+.detailButton {
+  font-size: 0.8rem;
+  padding: 0.5rem 1rem;
+}
+
+.activityDetail {
+  padding: 1rem 0;
+}
+
+.detailHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--slate-200);
+}
+
+.detailTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.detailTime {
+  font-size: 0.875rem;
+  color: var(--slate-500);
+}
+
+.detailContent {
+  margin-bottom: 2rem;
+}
+
+.detailRow {
+  margin-bottom: 1rem;
+}
+
+.detailRow label {
+  display: block;
+  font-weight: 600;
+  color: var(--slate-700);
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.detailRow p {
+  margin: 0;
+  color: var(--slate-600);
+}
+
+.detailActions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid var(--slate-200);
+}
+
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+  
+  .searchGroup {
+    max-width: none;
+  }
+  
+  .filterGroup {
+    min-width: auto;
+  }
+  
+  .detailHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
 @media (max-width: 480px) {
   .tableHeader {
     padding: 1rem;
+  }
+  
+  .statsCard {
+    padding: 1rem;
+  }
+  
+  .statsNumber {
+    font-size: 1.75rem;
+  }
+  
+  .filtersCard {
+    padding: 1rem;
+  }
+  
+  .description {
+    max-width: 200px;
   }
 }

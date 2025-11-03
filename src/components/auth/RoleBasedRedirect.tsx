@@ -4,13 +4,13 @@ import { useAuth } from '../../context/AuthContext';
 import { getDashboardPath } from '../auth/AuthGuard';
 
 const RoleBasedRedirect: React.FC = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { state } = useAuth();
 
-  if (!isAuthenticated || !user) {
+  if (!state.isAuthenticated || !state.user) {
     return <Navigate to="/login" replace />;
   }
 
-  const dashboardPath = getDashboardPath(user.role);
+  const dashboardPath = getDashboardPath(state.user.role);
   return <Navigate to={dashboardPath} replace />;
 };
 

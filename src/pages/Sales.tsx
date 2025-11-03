@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
+import { useServiceOptions } from '../hooks/useServiceOptions';
 import Button from '../components/ui/Button';
 import Modal from '../components/ui/Modal';
 import Input from '../components/ui/Input';
@@ -10,18 +11,11 @@ import Table from '../components/ui/Table';
 import styles from './Sales.module.css';
 import type { Sale } from '../types';
 
-const Services = [
-  { value: 'Haircut', label: 'Haircut - ₹300', price: 300 },
-  { value: 'Beard Trim', label: 'Beard Trim - ₹200', price: 200 },
-  { value: 'Hair + Beard', label: 'Hair + Beard - ₹450', price: 450 },
-  { value: 'Shave', label: 'Shave - ₹250', price: 250 },
-  { value: 'Hair Color', label: 'Hair Color - ₹500', price: 500 },
-];
-
 const PaymentMethods: ('Cash' | 'UPI' | 'Card' | 'Paytm')[] = ['Cash', 'UPI', 'Card', 'Paytm'];
 
 const Sales: React.FC = () => {
   const { state, dispatch } = useApp();
+  const { serviceOptions, getServicePrice } = useServiceOptions();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSale, setEditingSale] = useState<Sale | null>(null);
   const [formData, setFormData] = useState({
@@ -107,9 +101,9 @@ const Sales: React.FC = () => {
     setFormData(prev => ({ ...prev, service }));
     
     // Auto-update amount based on service price
-    const serviceData = Services.find(s => s.value === service);
-    if (serviceData) {
-      setFormData(prev => ({ ...prev, amount: serviceData.price.toString() }));
+    const price = getServicePrice(service);
+    if (price) {
+      setFormData(prev => ({ ...prev, amount: price.toString() }));
     }
   };
 
@@ -308,13 +302,7 @@ const Sales: React.FC = () => {
               <Select
                 value={formData.service}
                 onChange={(e) => handleServiceChange(e.target.value)}
-                options={[
-                  { value: '', label: 'Select Service' },
-                  ...Services.map(service => ({
-                    value: service.value,
-                    label: service.label
-                  }))
-                ]}
+                options={serviceOptions}
                 required
               />
             </label>

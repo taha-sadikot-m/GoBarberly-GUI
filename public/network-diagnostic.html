@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Network Diagnostic</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { padding: 10px 20px; margin: 10px 0; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Network Diagnostic Tool</h1>
+    <p>This tool will help diagnose the network connection issues between frontend and backend.</p>
+    
+    <button onclick="runDiagnostics()">Run Full Diagnostics</button>
+    <button onclick="testAPIConnection()">Test API Connection Only</button>
+    <button onclick="clearResults()">Clear Results</button>
+    
+    <div id="results"></div>
+    
+    <script>
+        const results = document.getElementById('results');
+        
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = message;
+            results.appendChild(div);
+        }
+        
+        function clearResults() {
+            results.innerHTML = '';
+        }
+        
+        async function testAPIConnection() {
+            addResult('🔍 Testing API Connection...', 'info');
+            
+            const testUrls = [
+                'http://127.0.0.1:8000/api/auth/login/',
+                'http://localhost:8000/api/auth/login/',
+            ];
+            
+            for (const url of testUrls) {
+                try {
+                    addResult(`Testing: ${url}`, 'info');
+                    
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: 'test@test.com',
+                            password: 'test'
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok || response.status === 400) {
+                        addResult(`✅ ${url} - Connection successful (Status: ${response.status})`, 'success');
+                        addResult(`Response: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'info');
+                    } else {
+                        addResult(`⚠️ ${url} - Unexpected status: ${response.status}`, 'error');
+                        addResult(`Response: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'info');
+                    }
+                    
+                } catch (error) {
+                    addResult(`❌ ${url} - Connection failed: ${error.message}`, 'error');
+                    addResult(`Error details: <pre>${JSON.stringify({
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack
+                    }, null, 2)}</pre>`, 'error');
+                }
+            }
+        }
+        
+        async function testCORSHeaders() {
+            addResult('🌐 Testing CORS Headers...', 'info');
+            
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/auth/login/', {
+                    method: 'OPTIONS',
+                });
+                
+                const corsHeaders = {
+                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
+                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
+                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers'),
+                    'Access-Control-Allow-Credentials': response.headers.get('Access-Control-Allow-Credentials'),
+                };
+                
+                addResult(`CORS Headers: <pre>${JSON.stringify(corsHeaders, null, 2)}</pre>`, 'info');
+                
+                if (corsHeaders['Access-Control-Allow-Origin']) {
+                    addResult('✅ CORS headers are present', 'success');
+                } else {
+                    addResult('❌ CORS headers are missing', 'error');
+                }
+                
+            } catch (error) {
+                addResult(`❌ CORS test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testRealLogin() {
+            addResult('🔐 Testing Real Login...', 'info');
+            
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/auth/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'taha.sadikot.m@gmail.com',
+                        password: 'Admin@123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    addResult('✅ Real login test successful!', 'success');
+                    addResult(`User: ${data.data.user.email} (${data.data.user.role})`, 'success');
+                } else {
+                    addResult('❌ Real login test failed', 'error');
+                    addResult(`Error: <pre>${JSON.stringify(data, null, 2)}</pre>`, 'error');
+                }
+                
+            } catch (error) {
+                addResult(`❌ Real login test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function runDiagnostics() {
+            clearResults();
+            addResult('🚀 Starting comprehensive network diagnostics...', 'info');
+            
+            // Basic info
+            addResult(`Current page: ${window.location.href}`, 'info');
+            addResult(`User agent: ${navigator.userAgent}`, 'info');
+            addResult(`Online status: ${navigator.onLine ? 'Online' : 'Offline'}`, navigator.onLine ? 'success' : 'error');
+            
+            // Run tests
+            await testAPIConnection();
+            await testCORSHeaders();
+            await testRealLogin();
+            
+            addResult('🏁 Diagnostics complete!', 'info');
+        }
+    </script>
+</body>
+</html>

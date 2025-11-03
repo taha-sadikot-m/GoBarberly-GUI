@@ -190,6 +190,11 @@
   color: #64748b;
 }
 
+.activeIndicator {
+  margin-left: 0.25rem;
+  font-size: 0.75rem;
+}
+
 .shopDetails {
   display: flex;
   flex-direction: column;
@@ -266,6 +271,19 @@
   color: white !important;
 }
 
+.transferButton {
+  color: #8b5cf6 !important;
+  border: 1px solid #8b5cf6 !important;
+  background: white !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.875rem !important;
+}
+
+.transferButton:hover {
+  background: #8b5cf6 !important;
+  color: white !important;
+}
+
 .deleteButton {
   color: #ef4444 !important;
   border: 1px solid #ef4444 !important;
@@ -274,9 +292,17 @@
   font-size: 0.875rem !important;
 }
 
-.deleteButton:hover {
+.deleteButton:hover:not(:disabled) {
   background: #ef4444 !important;
   color: white !important;
+}
+
+.deleteButton:disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+  background: #f1f5f9 !important;
+  color: #94a3b8 !important;
+  border-color: #e2e8f0 !important;
 }
 
 .confirmDelete {

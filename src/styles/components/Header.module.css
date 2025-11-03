@@ -38,6 +38,21 @@
 
 .menuButton {
   display: none;
+  background: var(--slate-100) !important;
+  color: var(--slate-700) !important;
+  border-radius: 0.375rem !important;
+  font-size: 1.125rem;
+  font-weight: 600;
+  transition: all 0.2s ease !important;
+}
+
+.menuButton:hover {
+  background: var(--slate-200) !important;
+  transform: scale(1.05);
+}
+
+.menuButton:active {
+  transform: scale(0.95);
 }
 
 .userDropdown {
@@ -92,6 +107,11 @@
   margin-bottom: 0.25rem;
 }
 
+.dropdownItem span:last-child {
+  margin-bottom: 0;
+  margin-top: 0.25rem;
+}
+
 .dropdownItem strong {
   display: block;
   font-weight: 600;
@@ -107,18 +127,69 @@
 /* Responsive design */
 @media (max-width: 860px) {
   .header {
-    padding: 1rem;
+    padding: 0.75rem 1rem;
+    position: relative;
+    z-index: 16; /* Just above overlay but below sidebar */
+  }
+  
+  .titles h1 {
+    font-size: 1.25rem;
+  }
+  
+  .titles p {
+    font-size: 0.875rem;
   }
   
   .menuButton {
     display: inline-flex;
+    order: -1; /* Move menu button to the left */
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+    padding: 0.625rem !important;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--slate-300) !important;
   }
   
   .toolbar {
     gap: 0.25rem;
+    flex-wrap: wrap;
+  }
+  
+  .userDropdown {
+    order: 1; /* Keep user dropdown visible */
   }
   
   .toolbar > *:not(.menuButton):not(.userDropdown) {
     display: none;
+  }
+  
+  /* Ensure dropdown menu is properly positioned on mobile */
+  .dropdownMenu {
+    right: 0;
+    left: auto;
+    min-width: 180px;
+    z-index: 25; /* Above everything */
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .header {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  .titles h1 {
+    font-size: 1.125rem;
+  }
+  
+  .titles p {
+    display: none; /* Hide subtitle on very small screens */
+  }
+  
+  .menuButton {
+    margin-right: 0.5rem;
   }
 }

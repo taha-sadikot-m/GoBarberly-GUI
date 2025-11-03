@@ -42,6 +42,10 @@ const pageInfo: Record<string, { title: string; subtitle: string }> = {
     title: 'History',
     subtitle: 'System activity log and audit trail',
   },
+  '/services': {
+    title: 'Services',
+    subtitle: 'Manage your barbershop services and pricing',
+  },
 };
 
 const AppLayout: React.FC = () => {

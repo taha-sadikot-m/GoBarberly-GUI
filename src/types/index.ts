@@ -7,6 +7,7 @@ export interface Appointment {
   barber: string;
   date: string;
   time: string;
+  amount?: number;
   status: 'Confirmed' | 'Pending' | 'Cancelled' | 'Completed';
 }
 
@@ -44,7 +45,37 @@ export interface InventoryItem {
   name: string;
   category: 'Hair Products' | 'Shaving' | 'Tools' | 'Cleaning' | 'Other';
   quantity: number;
-  minStock: number;
+  min_stock: number; // Backend uses snake_case
+  unit_cost?: number;
+  supplier?: string;
+  created_at?: string;
+  updated_at?: string;
+  is_low_stock?: boolean;
+  stock_status?: 'in_stock' | 'low_stock' | 'out_of_stock';
+}
+
+export interface BarbershopService {
+  id: number;
+  name: string;
+  price: string | number; // Backend returns string, frontend uses number
+  description?: string;
+  formatted_price?: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateServiceData {
+  name: string;
+  price: number;
+  description?: string;
+}
+
+export interface UpdateServiceData {
+  name?: string;
+  price?: number;
+  description?: string;
+  is_active?: boolean;
 }
 
 export interface HistoryEntry {

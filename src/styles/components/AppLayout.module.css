@@ -13,9 +13,28 @@
   overflow: hidden;
 }
 
+/* Mobile overlay for sidebar */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 15; /* Between header and sidebar */
+  backdrop-filter: blur(2px);
+}
+
 /* Mobile responsive */
 @media (max-width: 860px) {
   .main {
     margin-left: 0;
+  }
+  
+  .overlay {
+    display: block;
+  }
+}
+
+@media (min-width: 861px) {
+  .overlay {
+    display: none;
   }
 }

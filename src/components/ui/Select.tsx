@@ -23,7 +23,7 @@ const Select: React.FC<SelectProps> = ({
     >
       {options.map((option, index) => (
         <option 
-          key={index} 
+          key={`${option.value}-${index}`} 
           value={option.value}
           data-price={option['data-price']}
         >
