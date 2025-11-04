@@ -1,8 +1,11 @@
 import axios from 'axios';
 
+// API Configuration - use environment variable for production deployment
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+
 // Create axios instance for barbershop operations
 const barbershopApi = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api/barbershop',
+  baseURL: `${API_BASE_URL}/api/barbershop`,
   timeout: 10000,
 });
 
@@ -24,7 +27,7 @@ barbershopApi.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem('gobarberly_refresh_token');
         if (refreshToken) {
-          const refreshResponse = await axios.post('http://127.0.0.1:8000/api/auth/token/refresh/', {
+          const refreshResponse = await axios.post(`${API_BASE_URL}/api/auth/token/refresh/`, {
             refresh: refreshToken
           });
           
