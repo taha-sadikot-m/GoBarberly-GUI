@@ -24,7 +24,8 @@ const BarbershopManagement: React.FC<BarbershopManagementProps> = ({
   const { state } = useAuth();
   const { showSuccess, showError } = useToast();
   const [barbershops, setBarbershops] = useState<BarbershopUser[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // Start with not-loading so the first loadBarbershops() call is not skipped
+  const [isLoading, setIsLoading] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingBarbershop, setEditingBarbershop] = useState<BarbershopUser | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -33,63 +34,180 @@ const BarbershopManagement: React.FC<BarbershopManagementProps> = ({
   
   // Ref to track if component is mounted (prevent state updates after unmount)
   const isMountedRef = useRef(true);
+  // Ref to track in-flight fetches (avoid using state for this guard to prevent race)
+  const isFetchingRef = useRef(false);
+
+  // Log component initialization
+  console.log(`[BarbershopManagement-${state.user?.role}] 🏗️ Component initializing...`);
 
   // Get the appropriate service based on user role
   const getApiService = () => {
     return state.user?.role === 'super_admin' ? superAdminService : adminService;
   };
 
-  // Load barbershops data from API
-  const loadBarbershops = async () => {
+  // REWRITTEN: Load barbershops data from API with comprehensive error handling and logging
+  const loadBarbershops = async (retryCount = 0) => {
+    const maxRetries = 2;
+    const logPrefix = `[BarbershopManagement-${state.user?.role}]`;
+    
+    // Check if component is still mounted before starting
+    if (!isMountedRef.current) {
+      console.log(`${logPrefix} ⚠️ Component unmounted before load started, aborting`);
+      return;
+    }
+    
     try {
-      // Prevent duplicate loading if already loading
-      if (isLoading) {
-        console.log('⏳ Already loading barbershops, skipping duplicate request');
+      // Prevent duplicate loading using an in-flight ref (state can lag during render)
+      if (isFetchingRef.current) {
+        console.log(`${logPrefix} ⏳ Already loading barbershops (in-flight), skipping duplicate request`);
         return;
       }
+
+      // mark as fetching immediately
+      isFetchingRef.current = true;
+
+      console.log(`${logPrefix} 🚀 Starting barbershop load (attempt ${retryCount + 1}/${maxRetries + 1})`);
+      console.log(`${logPrefix} 👤 User: ${state.user?.email} (Role: ${state.user?.role})`);
       
-      setIsLoading(true);
+  setIsLoading(true);
       
-      console.log('🔍 Loading barbershops for user role:', state.user?.role);
-      
+      // Get appropriate API service
       const apiService = getApiService();
-      const barbershopsData = await apiService.getBarbershops();
+      const serviceName = state.user?.role === 'super_admin' ? 'SuperAdminService' : 'AdminService';
+      console.log(`${logPrefix} 🔧 Using ${serviceName}`);
+      
+      // Clear any existing errors
+      console.log(`${logPrefix} 🧹 Clearing previous barbershop data`);
+      
+      // Make API call with detailed timing
+      const startTime = Date.now();
+      console.log(`${logPrefix} 📡 Making API call...`);
+      
+      const barbershopsData = await apiService.getBarbershops({});
+      
+      const loadTime = Date.now() - startTime;
+      console.log(`${logPrefix} ⏱️ API call completed in ${loadTime}ms`);
+      
+      // Validate response
+      if (!barbershopsData) {
+        throw new Error('No data received from API');
+      }
+      
+      if (!barbershopsData.barbershops) {
+        throw new Error('No barbershops array in response');
+      }
+      
+      if (!Array.isArray(barbershopsData.barbershops)) {
+        throw new Error(`Invalid barbershops data type: ${typeof barbershopsData.barbershops}`);
+      }
+      
+      console.log(`${logPrefix} ✅ API Response validated successfully`);
+      console.log(`${logPrefix} 📊 Response details:`, {
+        barbershopsCount: barbershopsData.barbershops.length,
+        totalCount: barbershopsData.count,
+        hasData: barbershopsData.barbershops.length > 0,
+        sampleBarbershop: barbershopsData.barbershops[0] ? {
+          id: barbershopsData.barbershops[0].id,
+          shopName: barbershopsData.barbershops[0].shop_name,
+          email: barbershopsData.barbershops[0].email,
+          isActive: barbershopsData.barbershops[0].is_active
+        } : null
+      });
       
       // Only update state if component is still mounted
       if (isMountedRef.current) {
-        console.log('✅ Loaded barbershops:', barbershopsData);
-        console.log('🔍 Barbershops data structure:', {
-          fullResponse: barbershopsData,
-          barbershopsArray: barbershopsData.barbershops,
-          barbershopsLength: barbershopsData.barbershops?.length,
-          barbershopsType: typeof barbershopsData.barbershops,
-          isArray: Array.isArray(barbershopsData.barbershops)
-        });
+        console.log(`${logPrefix} 🔄 Updating component state with ${barbershopsData.barbershops.length} barbershops`);
         setBarbershops(barbershopsData.barbershops);
-        console.log('📊 Set barbershops state:', barbershopsData.barbershops?.length, 'items');
-      }
-    } catch (error: any) {
-      console.error('❌ Failed to load barbershops:', error);
-      
-      // Only show error and update state if component is still mounted
-      if (isMountedRef.current) {
-        // Only show error if we don't have existing data (to handle timeout scenarios where data still loads)
-        if (barbershops.length === 0) {
-          // More specific error messages
-          let errorMessage = 'Failed to load barbershops. Please try again.';
-          if (error?.message?.includes('timeout')) {
-            errorMessage = 'Request timed out. The data may still be loading. Please refresh if barbershops are not visible.';
-          } else if (error?.message?.includes('Network Error')) {
-            errorMessage = 'Network error. Please check your connection and try again.';
-          }
+        
+        // Show success message for significant loads
+        if (barbershopsData.barbershops.length > 0) {
+          console.log(`${logPrefix} 🎉 SUCCESS: Loaded ${barbershopsData.barbershops.length} barbershops`);
           
-          showError(errorMessage, 'Loading Error');
+          // Show success toast for first load or significant changes
+          if (barbershops.length === 0 || Math.abs(barbershops.length - barbershopsData.barbershops.length) > 0) {
+            showSuccess(
+              `Loaded ${barbershopsData.barbershops.length} barbershop${barbershopsData.barbershops.length === 1 ? '' : 's'}`,
+              'Data Loaded'
+            );
+          }
         } else {
-          console.log('ℹ️ Error occurred but existing data available, not showing error toast');
+          console.log(`${logPrefix} ℹ️ No barbershops found for user ${state.user?.email}`);
+        }
+      } else {
+        console.log(`${logPrefix} ⚠️ Component unmounted, skipping state update`);
+      }
+      
+  } catch (error: any) {
+      console.error(`${logPrefix} ❌ BARBERSHOP LOAD ERROR (attempt ${retryCount + 1}):`, error);
+      console.error(`${logPrefix} 📋 Error details:`, {
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        responseData: error.response?.data,
+        stack: error.stack?.split('\n').slice(0, 3).join('\n')
+      });
+      
+      // Only handle error if component is still mounted
+      if (isMountedRef.current) {
+        // Determine if we should retry
+        const shouldRetry = retryCount < maxRetries && (
+          error.code === 'ECONNABORTED' || // Timeout
+          error.code === 'NETWORK_ERROR' || // Network error
+          error.response?.status >= 500 // Server error
+        );
+        
+        if (shouldRetry) {
+          console.log(`${logPrefix} 🔄 Retrying in 2 seconds (attempt ${retryCount + 2}/${maxRetries + 1})`);
+          setTimeout(() => {
+            if (isMountedRef.current) {
+              loadBarbershops(retryCount + 1);
+            }
+          }, 2000);
+          return;
+        }
+        
+        // Generate user-friendly error message
+        let errorMessage = 'Unable to load barbershops';
+        let errorTitle = 'Loading Error';
+        
+        if (error.message.includes('Authentication failed')) {
+          errorMessage = 'Your session has expired. Please login again.';
+          errorTitle = 'Authentication Error';
+        } else if (error.message.includes('Access denied')) {
+          errorMessage = 'You do not have permission to view barbershops.';
+          errorTitle = 'Access Denied';
+        } else if (error.message.includes('timeout')) {
+          errorMessage = 'The request timed out. Please check your internet connection and try again.';
+          errorTitle = 'Connection Timeout';
+        } else if (error.message.includes('Network error')) {
+          errorMessage = 'Network connection error. Please check your internet connection.';
+          errorTitle = 'Network Error';
+        } else if (error.response?.status >= 500) {
+          errorMessage = 'Server error. Please try again in a few moments.';
+          errorTitle = 'Server Error';
+        } else if (error.response?.status === 404) {
+          errorMessage = 'Barbershops service not found. Please contact support.';
+          errorTitle = 'Service Error';
+        }
+        
+        // Show error only if we don't have existing data
+        if (barbershops.length === 0) {
+          console.log(`${logPrefix} 🔔 Showing error to user: ${errorMessage}`);
+          showError(errorMessage, errorTitle);
+        } else {
+          console.log(`${logPrefix} ℹ️ Error occurred but existing data available, showing warning`);
+          showError(
+            `Unable to refresh barbershops: ${errorMessage}`,
+            'Refresh Error'
+          );
         }
       }
+      
     } finally {
+      // reset fetching ref and loading state
+      isFetchingRef.current = false;
       if (isMountedRef.current) {
+        console.log(`${logPrefix} 🏁 Setting loading to false`);
         setIsLoading(false);
       }
     }
@@ -97,10 +215,13 @@ const BarbershopManagement: React.FC<BarbershopManagementProps> = ({
 
   // Load data on component mount and cleanup on unmount
   useEffect(() => {
+    console.log(`[BarbershopManagement-${state.user?.role}] 🔄 Component mounted, starting initial load`);
+    isMountedRef.current = true; // Ensure it's set to true on mount
     loadBarbershops();
     
     // Cleanup function to prevent state updates after unmount
     return () => {
+      console.log(`[BarbershopManagement-${state.user?.role}] 🔄 Component unmounting, setting mounted ref to false`);
       isMountedRef.current = false;
     };
   }, []);

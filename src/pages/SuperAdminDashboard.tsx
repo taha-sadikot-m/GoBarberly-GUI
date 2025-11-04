@@ -24,14 +24,19 @@ const SuperAdminDashboard: React.FC = () => {
 
 
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
   }, []);
 
-  const loadDashboardData = async () => {
-    setIsLoading(true);
+  const loadDashboardData = async (isRefresh = false) => {
+    if (isRefresh) {
+      setIsRefreshing(true);
+    } else {
+      setIsInitialLoading(true);
+    }
     setError(null);
     
     try {
@@ -52,7 +57,11 @@ const SuperAdminDashboard: React.FC = () => {
       console.error('Failed to load dashboard data:', error);
       setError(error instanceof Error ? error.message : 'Failed to load dashboard data');
     } finally {
-      setIsLoading(false);
+      if (isRefresh) {
+        setIsRefreshing(false);
+      } else {
+        setIsInitialLoading(false);
+      }
     }
   };
 
@@ -60,7 +69,7 @@ const SuperAdminDashboard: React.FC = () => {
 
 
 
-  if (isLoading) {
+  if (isInitialLoading) {
     return (
       <div className={styles.loading}>
         <div className={styles.spinner}></div>
@@ -75,7 +84,7 @@ const SuperAdminDashboard: React.FC = () => {
         <div className={styles.error}>
           <h2>Error Loading Dashboard</h2>
           <p>{error}</p>
-          <Button onClick={loadDashboardData}>Try Again</Button>
+          <Button onClick={() => loadDashboardData(false)}>Try Again</Button>
         </div>
       </div>
     );
@@ -209,19 +218,19 @@ const SuperAdminDashboard: React.FC = () => {
 
         {activeTab === 'admins' && (
           <AdminManagement
-            onDataChange={() => loadDashboardData()}
+            onDataChange={() => loadDashboardData(true)}
           />
         )}
 
         {activeTab === 'barbershops' && (
           <BarbershopManagement
-            onDataChange={() => loadDashboardData()}
+            onDataChange={() => loadDashboardData(true)}
           />
         )}
 
         {activeTab === 'archive' && (
           <ArchiveManagement
-            onDataChange={() => loadDashboardData()}
+            onDataChange={() => loadDashboardData(true)}
           />
         )}
       </div>

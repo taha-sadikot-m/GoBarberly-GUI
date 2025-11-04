@@ -272,9 +272,12 @@ export class SuperAdminService {
     }
   }
 
-  // Barbershop Management Methods
+  // REWRITTEN: Barbershop Management Methods with comprehensive logging and error handling
   async getBarbershops(params?: SearchParams): Promise<{ barbershops: BarbershopUser[]; count: number }> {
+    console.log('🚀 SuperAdmin getBarbershops called with params:', params);
+    
     try {
+      // Build query parameters
       const queryParams = new URLSearchParams();
       if (params?.search) queryParams.append('search', params.search);
       if (params?.is_active !== undefined) queryParams.append('is_active', params.is_active.toString());
@@ -282,17 +285,115 @@ export class SuperAdminService {
       if (params?.page) queryParams.append('page', params.page.toString());
       if (params?.page_size) queryParams.append('page_size', params.page_size.toString());
 
-      const url = `${this.baseURL}/barbershops/${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
-      const response = await apiClient.get<APIResponse<BarbershopUser[]>>(url, {
-        timeout: 30000 // 30 seconds timeout for barbershop loading
+      const queryString = queryParams.toString();
+      const url = `${this.baseURL}/barbershops/${queryString ? '?' + queryString : ''}`;
+      
+      console.log('🔗 SuperAdmin API URL:', url);
+      console.log('🔍 SuperAdmin Query params:', Object.fromEntries(queryParams));
+      
+      // Make API request with comprehensive error handling
+      const startTime = Date.now();
+      const response = await apiClient.get<any>(url, {
+        timeout: 45000, // Increased timeout
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+      
+      const requestTime = Date.now() - startTime;
+      console.log(`⏱️ SuperAdmin API request completed in ${requestTime}ms`);
+      console.log('📦 SuperAdmin API Response status:', response.status);
+      console.log('📦 SuperAdmin API Response data:', response.data);
+      
+      // Validate response structure
+      if (!response.data) {
+        throw new Error('No data in API response');
+      }
+      
+      // Handle different response formats
+      let barbershops: BarbershopUser[] = [];
+      let count = 0;
+      
+      if (response.data.success === true) {
+        // New API format
+        barbershops = response.data.data || [];
+        count = response.data.count || 0;
+        console.log('✅ SuperAdmin API Success (new format):', {
+          barbershops: barbershops.length,
+          count: count,
+          total: response.data.total_barbershops,
+          message: response.data.message
+        });
+      } else if (Array.isArray(response.data)) {
+        // Legacy array format
+        barbershops = response.data;
+        count = barbershops.length;
+        console.log('✅ SuperAdmin API Success (legacy format):', {
+          barbershops: barbershops.length,
+          count: count
+        });
+      } else if (response.data.data && Array.isArray(response.data.data)) {
+        // APIResponse wrapper format
+        barbershops = response.data.data;
+        count = response.data.count || barbershops.length;
+        console.log('✅ SuperAdmin API Success (wrapped format):', {
+          barbershops: barbershops.length,
+          count: count
+        });
+      } else {
+        // Fallback - try to handle any format
+        console.warn('⚠️ Unknown response format, attempting to parse:', response.data);
+        barbershops = Array.isArray(response.data) ? response.data : [];
+        count = barbershops.length;
+      }
+      
+      // Validate barbershops data
+      if (!Array.isArray(barbershops)) {
+        console.error('❌ SuperAdmin API Error: Barbershops is not an array:', barbershops);
+        throw new Error('Invalid barbershops data format');
+      }
+      
+      console.log('🎉 SuperAdmin getBarbershops SUCCESS:', {
+        totalBarbershops: barbershops.length,
+        count: count,
+        sampleData: barbershops.slice(0, 2).map(b => ({
+          id: b.id,
+          shopName: b.shop_name,
+          email: b.email
+        }))
       });
       
       return {
-        barbershops: this.handleResponse(response),
-        count: response.data.count || 0
+        barbershops,
+        count
       };
-    } catch (error) {
-      this.handleError(error as AxiosError);
+      
+    } catch (error: any) {
+      console.error('❌ SuperAdmin getBarbershops CRITICAL ERROR:', error);
+      console.error('❌ Error details:', {
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        stack: error.stack
+      });
+      
+      // Provide detailed error information
+      if (error.response?.status === 401) {
+        throw new Error('Authentication failed. Please login again.');
+      } else if (error.response?.status === 403) {
+        throw new Error('Access denied. Super admin privileges required.');
+      } else if (error.response?.status === 404) {
+        throw new Error('Barbershops endpoint not found. Please check API configuration.');
+      } else if (error.response?.status >= 500) {
+        throw new Error('Server error. Please try again later.');
+      } else if (error.code === 'ECONNABORTED') {
+        throw new Error('Request timeout. Please check your connection.');
+      } else if (error.code === 'NETWORK_ERROR') {
+        throw new Error('Network error. Please check your connection.');
+      } else {
+        throw new Error(`Failed to fetch barbershops: ${error.message}`);
+      }
     }
   }
 

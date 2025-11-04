@@ -20,7 +20,8 @@ const AdminDashboard: React.FC = () => {
     monthlyRevenue: 0
   });
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Get appropriate API service based on user role
   const getApiService = () => {
@@ -32,8 +33,12 @@ const AdminDashboard: React.FC = () => {
     loadDashboardData();
   }, []);
 
-  const loadDashboardData = async () => {
-    setIsLoading(true);
+  const loadDashboardData = async (isRefresh = false) => {
+    if (isRefresh) {
+      setIsRefreshing(true);
+    } else {
+      setIsInitialLoading(true);
+    }
     try {
       const apiService = getApiService();
       console.log('AdminDashboard - Loading dashboard stats with:', state.user?.role === 'super_admin' ? 'superAdminService' : 'adminService');
@@ -64,13 +69,17 @@ const AdminDashboard: React.FC = () => {
       };
       setStats(mockStats);
     } finally {
-      setIsLoading(false);
+      if (isRefresh) {
+        setIsRefreshing(false);
+      } else {
+        setIsInitialLoading(false);
+      }
     }
   };
 
 
 
-  if (isLoading) {
+  if (isInitialLoading) {
     return (
       <div className={styles.loading}>
         <div className={styles.spinner}></div>
@@ -217,12 +226,14 @@ const AdminDashboard: React.FC = () => {
         )}
 
         {activeTab === 'barbershops' && (
-          <BarbershopManagement />
+          <BarbershopManagement
+            onDataChange={() => loadDashboardData(true)}
+          />
         )}
 
         {activeTab === 'archive' && (
           <AdminArchiveManagement
-            onDataChange={() => loadDashboardData()}
+            onDataChange={() => loadDashboardData(true)}
           />
         )}
       </div>
