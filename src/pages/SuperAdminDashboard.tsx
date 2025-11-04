@@ -25,7 +25,6 @@ const SuperAdminDashboard: React.FC = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
@@ -33,7 +32,7 @@ const SuperAdminDashboard: React.FC = () => {
 
   const loadDashboardData = async (isRefresh = false) => {
     if (isRefresh) {
-      setIsRefreshing(true);
+      console.log('SuperAdminDashboard: refreshing dashboard data');
     } else {
       setIsInitialLoading(true);
     }
@@ -58,7 +57,7 @@ const SuperAdminDashboard: React.FC = () => {
       setError(error instanceof Error ? error.message : 'Failed to load dashboard data');
     } finally {
       if (isRefresh) {
-        setIsRefreshing(false);
+        console.log('SuperAdminDashboard: finished refreshing dashboard data');
       } else {
         setIsInitialLoading(false);
       }

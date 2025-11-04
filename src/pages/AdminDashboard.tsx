@@ -21,7 +21,6 @@ const AdminDashboard: React.FC = () => {
   });
 
   const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Get appropriate API service based on user role
   const getApiService = () => {
@@ -35,7 +34,7 @@ const AdminDashboard: React.FC = () => {
 
   const loadDashboardData = async (isRefresh = false) => {
     if (isRefresh) {
-      setIsRefreshing(true);
+      console.log('AdminDashboard: refreshing dashboard data');
     } else {
       setIsInitialLoading(true);
     }
@@ -70,7 +69,7 @@ const AdminDashboard: React.FC = () => {
       setStats(mockStats);
     } finally {
       if (isRefresh) {
-        setIsRefreshing(false);
+        console.log('AdminDashboard: finished refreshing dashboard data');
       } else {
         setIsInitialLoading(false);
       }
