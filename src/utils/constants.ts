@@ -8,7 +8,7 @@ export const APP_CONFIG = {
 // API Configuration
 export const API_CONFIG = {
   BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:8000',
-  TIMEOUT: 10000,
+  TIMEOUT: 90000, // Increased to 90 seconds for slow email services on Render
   RETRY_ATTEMPTS: 3,
   RETRY_DELAY: 1000,
 };

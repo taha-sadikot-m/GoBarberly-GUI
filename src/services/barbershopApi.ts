@@ -6,7 +6,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
 // Create axios instance for barbershop operations
 const barbershopApi = axios.create({
   baseURL: `${API_BASE_URL}/api/barbershop`,
-  timeout: 10000,
+  timeout: 90000, // Increased to 90 seconds for slow email services on Render
 });
 
 // Add auth token to requests

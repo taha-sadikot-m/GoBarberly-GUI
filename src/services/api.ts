@@ -9,7 +9,7 @@ const API_PREFIX = '/api';
 // Create axios instance with default configuration
 export const apiClient: AxiosInstance = axios.create({
   baseURL: `${API_BASE_URL}${API_PREFIX}`,
-  timeout: 10000,
+  timeout: 90000, // Increased to 90 seconds for slow email services on Render
   headers: {
     'Content-Type': 'application/json',
   },
